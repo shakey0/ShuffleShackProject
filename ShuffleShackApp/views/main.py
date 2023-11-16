@@ -1,23 +1,20 @@
 from flask import Blueprint
 from ShuffleShackApp.extensions import db
 from ShuffleShackApp.models.user import User
+from ShuffleShackApp.models.property import Property
+from ShuffleShackApp.models.room import Room
 from flask import render_template
-import random
-import string
 
 main = Blueprint('main', __name__)
 
 @main.route('/')
 def index():
-    # { }
-    random_username = ''.join(random.choices(string.ascii_lowercase, k=10))
-    random_email = '{}@example.com'.format(random_username)
 
-    new_user = User(username=random_username, email=random_email)
+    user = User.query.filter_by(id=1).first()
+    print(f'user: {user}')
+    property = Property.query.filter_by(id=1).first()
+    print(property)
+    room = Room.query.filter_by(id=1).first()
+    print(room)
 
-    db.session.add(new_user)
-    db.session.commit()
-
-    last_user = User.query.order_by(User.id.desc()).first()
-
-    return '<h1>Hello world!</h1><br>Last added user: {} with email {}'.format(last_user.username, last_user.email)
+    return '<h1>Hello world!</h1><br>User: {user}<br>Property: {property}<br>Room: {room}'.format(user=user.user_name, property=property.name, room=room.name)

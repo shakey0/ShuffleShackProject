@@ -108,7 +108,7 @@
 (DELETE CASCADE; DELETE CASCADE)
 
 
-# 3. Repository & Model Classes
+# 3. Use Cases
 
 ### Retrieval Requirements
 
@@ -118,5 +118,5 @@
 2. When a user enters the start_date, end_date, no_of_guests, can_sleep_on_floor, country and city and presses search, they can see a list of properties with available rooms on those dates and available beds/spaces in that location >>
     
 
-3. When a user sets the following filters - type, check_in_after_XX, includes_breakfast (free), accepts_children (under 16), allows_pets (cats, dogs*, all), bed_types, bathroom, tv, price_per_night - the above method will be added to accordingly >>
+3. When a user sets the following filters - type, check_in_after_XX, includes_breakfast (free), accepts_children (under 16), allows_pets (cats, dogs*, all), bed_types, bathroom, tv, price_per_night - only properties/rooms with adhering to the user requirements will appear in the search list >>
     

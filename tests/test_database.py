@@ -1,6 +1,6 @@
 from ShuffleShackApp.models.test_table import RunTable, db
 
-def test_database_connection(test_app, test_client, seed_database):
+def test_database_connection(test_app, test_client, seed_test_database_for_test):
     db.session.add(RunTable(name='second_record'))
     db.session.commit()
 
