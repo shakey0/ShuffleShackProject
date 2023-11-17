@@ -180,7 +180,7 @@ def init_rooms(db):
 
 def init_bookings(db):
     bookings = [
-        Booking(
+        Booking(  # BOOKING 1
             is_real=True,
             time_made=datetime(2023, 5, 21, 9, 34, 23),
             start_date=date(2023, 6, 5),
@@ -230,7 +230,7 @@ def init_bookings(db):
             property_id=1,
             user_id=3
         ),
-        Booking(
+        Booking(  # BOOKING 2
             is_real=True,
             time_made=datetime(2023, 5, 22, 21, 20, 3),
             start_date=date(2023, 5, 29),
@@ -282,7 +282,7 @@ def init_bookings(db):
             property_id=1,
             user_id=7
         ),
-        Booking(
+        Booking(  # BOOKING 3
             is_real=True,
             time_made=datetime(2023, 5, 22, 21, 55, 44),
             start_date=date(2023, 6, 3),
@@ -353,7 +353,7 @@ def init_bookings(db):
             property_id=2,
             user_id=4
         ),
-        Booking(
+        Booking(  # BOOKING 4
             is_real=False,
             time_made=datetime(2023, 5, 24, 13, 51, 33),
             start_date=date(2023, 6, 19),
@@ -377,7 +377,7 @@ def init_bookings(db):
             property_id=2,
             user_id=6
         ),
-        Booking(
+        Booking(  # BOOKING 5
             is_real=True,
             time_made=datetime(2023, 6, 27, 19, 12, 14),
             start_date=date(2023, 6, 30),
@@ -461,4 +461,11 @@ def init_bookings(db):
     ]
 
     db.session.add_all(bookings)
+    db.session.flush()
+
+    for booking in bookings:
+        room_ids = [int(room_id) for room_id in booking.room_info.keys()]
+        rooms = Room.query.filter(Room.id.in_(room_ids)).all()
+        booking.rooms = rooms
+
     db.session.commit()

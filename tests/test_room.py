@@ -4,7 +4,8 @@ from datetime import date
 
 def test_room_creation(test_app, test_client, seed_test_database):
 
-    room = Room.query.filter_by(name='Cozy Suite').first()
+    room_name_part = 'suite'.lower()
+    room = Room.query.filter(Room.name.ilike(f"%{room_name_part}%")).first()
 
     assert room is not None
     assert room.id == 1
@@ -27,6 +28,7 @@ def test_room_creation(test_app, test_client, seed_test_database):
     assert room.extras['Fold out bed'] != 0
     assert 'Cot' in room.extras
     assert room.extras['Cot'] > 0
+    assert [booking.id for booking in room.bookings] == [1, 2]
 
     assert room.__eq__(Room.query.filter_by(name='Cozy Suite').first()) is True
     assert room.__repr__() == '<Room 1 Cozy Suite>'

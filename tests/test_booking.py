@@ -86,6 +86,7 @@ def test_booking_creation(test_app, test_client, seed_test_database):
     assert 'guest_pets' in booking.property_info
     assert not booking.property_info['host_pets']
     assert booking.property_info['guest_pets']
+    assert [room.id for room in booking.rooms] == [2, 3]
 
     assert booking.__eq__(Booking.query.filter_by(id=3).first()) is True
     assert booking.__repr__() == f'<Booking 3 reviewed>'
@@ -122,3 +123,4 @@ def test_false_booking(test_app, test_client, seed_test_database):
     assert false_booking.review_reply == ''
     assert false_booking.property_id == 2
     assert false_booking.user_id == 6
+    assert [room.id for room in false_booking.rooms] == [2, 3, 4, 5]

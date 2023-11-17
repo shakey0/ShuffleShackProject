@@ -24,8 +24,16 @@ class Booking(db.Model):
     property_id = db.Column(db.Integer, db.ForeignKey('properties.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
+    rooms = db.relationship('Room', secondary='rooms_bookings', back_populates='bookings')
+
     def __eq__(self, other):
         return self.id == other.id
 
     def __repr__(self):
         return f'<Booking {self.id} {self.status}>'
+
+
+rooms_bookings = db.Table('rooms_bookings',
+    db.Column('room_id', db.Integer, db.ForeignKey('rooms.id', ondelete='RESTRICT'), primary_key=True),
+    db.Column('booking_id', db.Integer, db.ForeignKey('bookings.id', ondelete='CASCADE'), primary_key=True)
+)

@@ -20,6 +20,8 @@ class Room(db.Model):
     premium = db.Column(db.Integer)
     property_id = db.Column(db.Integer, db.ForeignKey('properties.id', ondelete='RESTRICT'), nullable=False)
 
+    bookings = db.relationship('Booking', secondary='rooms_bookings', back_populates='rooms')
+
     def __eq__(self, other):
         return self.id == other.id
 
