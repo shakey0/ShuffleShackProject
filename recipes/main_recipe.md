@@ -113,10 +113,39 @@
 ### Retrieval Requirements
 
 1. When a user first enters the site unauthenticated, they can see a list of popular properties from around the world >>
-    
+    - **Main Method** to randomly select 30 properties in different cities filtering them to only include ones with an average review of at least 40 (when the website initially launches, and for dev and testing purposes, there will be less than 30 properties - only 2 for testing and dev purposes)
+    - mentioned method to get the review ratings of each property
+    ```python
+    def get_popular_properties():
+        pass
+    ```
 
 2. When a user enters the start_date, end_date, no_of_guests, can_sleep_on_floor, country and city and presses search, they can see a list of properties with available rooms on those dates and available beds/spaces in that location >>
-    
+    - **Main Method** to use first method and then pass the properties from the first method to the second method
+    - first method to get all properties that match the city
+    - second method to get all the rooms that match each property_id (in turn) that will use a method to check if the room is available on the dates selected, will use a method to check the amount of beds/spaces in each room, and will use a method to to check if a booking for the room exists in these dates and checks the status is active - only returns properties where rooms with enough beds have been found
+    - mentioned method to check if the room is available on the dates selected (checking start_date, end_date and available_days)
+    - mentioned method to check the amount of beds/spaces in each room
+    - mentioned method to to check (through rooms_bookings) if a booking for the room exists in these dates and checks the status is active
+    **Next method continues this one.**
 
-3. When a user sets the following filters - type, check_in_after_XX, includes_breakfast (free), accepts_children (under 16), allows_pets (cats, dogs*, all), bed_types, bathroom, tv, price_per_night - only properties/rooms with adhering to the user requirements will appear in the search list >>
-    
+3. When a user sets the following filters - type, check_in_after_XX, includes_breakfast (free), accepts_children (under 16), allows_pets (cats, dogs*, all), bed_types, bathroom, tv, price_per_night - the above method will be added to accordingly >>
+    - **Main Method** to use first method, pass the properties to all added methods that can been included as arguments and then pass the remaining properties to the second method with any arguments for the rooms
+    - first method to get all properties that match the city
+    - <em>added method to check if the property type matches</em>
+    - <em>added method to check if the property check_in_to is available 1 or more hours after stated</em>
+    - <em>added method to check if the property includes free breakfast</em>
+    - <em>added method to check if the property has an age limit above 0</em>
+    - <em>added method to check if the property allows the pets selected (parsed as a list)</em>
+    - second method to get all the rooms that match each property_id (in turn) that will use a method to check if the room is available on the dates selected, will use a method to check the amount of beds/spaces in each room, and will use a method to to check if a booking for the room exists in these dates and checks the status is active - only returns properties where rooms with enough beds have been found and:
+        - <em>added method to check if the room has the matching beds types in the list (parsed as a list)</em>
+        - <em>added method to check if the room has a bathroom</em>
+        - <em>added method to check if the room has a TV</em>
+        - <em>added method to check if the price of the room per night is within the range set (parsed as a tuple)</em>
+    - mentioned method to check if the room is available on the dates selected (checking start_date, end_date and available_days)
+    - mentioned method to check the amount of beds/spaces in each room
+    - mentioned method to to check (through rooms_bookings) if a booking for the room exists in these dates and checks the status is active
+    ```python
+    def get_search_properties(start_date, end_date, no_of_guests, can_sleep_on_floor, country, city, type=None, check_in_after=None, includes_breakfast=None, accepts_children=None, allows_pets=None, bed_types=None, wants_bathroom=False, wants_tv=False, price_per_night=None):
+        pass
+    ```

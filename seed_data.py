@@ -3,6 +3,9 @@ from ShuffleShackApp.models.property import Property
 from ShuffleShackApp.models.room import Room
 from ShuffleShackApp.models.booking import Booking
 from datetime import date, datetime
+import random
+import string
+from sqlalchemy.exc import IntegrityError
 
 
 def init_users(db):
@@ -53,7 +56,6 @@ def init_properties(db):
         },
         user_id=1
     )
-
     test_property2 = Property(
         country='Sampleland',
         city='Example City',
@@ -469,3 +471,220 @@ def init_bookings(db):
         booking.rooms = rooms
 
     db.session.commit()
+
+
+def create_random_users(number_of_users):
+    users = []
+    for _ in range(number_of_users):
+        first_name = ''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase, k=6))
+        last_name = ''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase, k=8))
+        user_name = f"{first_name.lower()}_{last_name.lower()}"
+        email = f"{user_name}@example.com"
+        phone_number = ''.join(random.choices(string.digits, k=10))
+
+        user = User(
+            first_name=first_name, 
+            last_name=last_name, 
+            user_name=user_name, 
+            email=email, 
+            phone_number=phone_number, 
+            password=b'secret',
+            d_o_b=date(random.randint(1950, 2000), random.randint(1, 12), random.randint(1, 28)),
+            nationality='Testland', 
+            t_bookings=0, 
+            no_shows=0, 
+            guest_complaints=0, 
+            host_complaints=0, 
+            is_admin=False
+        )
+        users.append(user)
+    return users
+
+
+def create_random_properties(number_of_properties, random_users):
+    properties = []
+    property_types = ['House', 'Apartment', 'Lodge']
+    cancel_periods = [24, 48, 72]
+
+    for _ in range(number_of_properties):
+        country = 'Testland'
+        property_type = random.choice(property_types)
+        check_in_from = random.randint(9, 18)
+        check_in_to = random.randint(22, 28)
+        check_out = random.randint(9, 14)
+        cancel_period = random.choice(cancel_periods)
+        user_id = random.choice(range(1, len(random_users) + 1))
+        city = ''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase, k=6))
+        address_1 = f"{random.randint(1, 999)} {city} Street"
+        address_2 = f"{city} District"
+        address_3 = f"{city} County"
+        postcode = ''.join(random.choices(string.ascii_uppercase, k=2)) + ''.join(random.choices(string.digits, k=2)) + ' ' + ''.join(random.choices(string.digits, k=1)) + ''.join(random.choices(string.ascii_uppercase, k=2))
+        phone_number = ''.join(random.choices(string.digits, k=10))
+        name = f"{city} Property"
+        description = f"A {property_type.lower()} in {city} for testing purposes."
+        meals = {'Breakfast': {'Bagel & Tea': 0, 'Full English': 500}}
+        extras = {'City tour': 1200, 'Airport transfer for up to 4 people': 400, 'Late check-out until 4 pm': 2000, 'Cooking class': 1500, 'Massage': 2000}
+        review_data = {
+            'average_rating': random.randint(0, 50),
+            'number_of_reviews': random.randint(0, 50),
+            'ratings': {'5': random.randint(0, 10), '4': random.randint(0, 10), '3': random.randint(0, 10), '2': random.randint(0, 10), '1': random.randint(0, 10)},
+            'section_averages': {'food': random.randint(0, 50), 'host': random.randint(0, 50), 'room': random.randint(0, 50), 'comfort': random.randint(0, 50), 'location': random.randint(0, 50), 'property': random.randint(0, 50), 'cleanliness': random.randint(0, 50)}
+        }
+
+        property = Property(
+            country=country,
+            city=city,
+            address_1=address_1,
+            address_2=address_2,
+            address_3=address_3,
+            postcode=postcode,
+            phone_number=phone_number,
+            name=name,
+            type=property_type,
+            description=description,
+            check_in_from=check_in_from,
+            check_in_to=check_in_to,
+            check_out=check_out,
+            cancel_period=cancel_period,
+            meals=meals,
+            min_age=0,
+            min_stay=2,
+            host_pets={},
+            guest_pets={'Dog': True, 'Cat': True},
+            pets_notice='We welcome pets. Please inform us by adding it to your booking.',
+            extras=extras,
+            review_data=review_data,
+            user_id=user_id
+        )
+        properties.append(property)
+
+    return properties
+
+
+import random
+from datetime import date
+
+def create_random_rooms(number_of_rooms, random_properties):
+    rooms = []
+    floors = ['Ground', '1', '2', '3', 'Attic']
+    bed_types = ['Single', 'Queen', 'Double', 'King', 'Super King']
+    bed_capacity = {'Single': 1, 'Queen': 2, 'Double': 2, 'King': 2, 'Super King': 2}
+
+    for _ in range(number_of_rooms):
+        floor = random.choice(floors)
+        bed_type = random.choice(bed_types)
+        number_of_beds = 1 if bed_type == 'Single' else 2
+        max_guests = bed_capacity[bed_type] * number_of_beds + random.randint(0, 4)
+        price = random.randint(5000, 15000)
+        premium = random.randint(0, 2000)
+        room_name = ''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase, k=6))
+        description = f"A {bed_type.lower()} bed room on the {floor} floor."
+        property_id = random.choice(range(1, len(random_properties) + 1))
+        room = Room(
+            start_date=date(2023, random.randint(5, 12), random.randint(1, 28)),
+            end_date=date(2024, random.randint(1, 4), random.randint(1, 28)),
+            available_days='All',
+            name=room_name,
+            floor=floor,
+            description=description,
+            beds={bed_type: number_of_beds},
+            max_guests=max_guests,
+            has_bathroom=random.choice([True, False]),
+            has_tv=random.choice([True, False]),
+            extras={"Sleeping bag for sofa": random.randint(500, 1000)},
+            price=price,
+            premium=premium,
+            property_id=property_id
+        )
+        rooms.append(room)
+
+    return rooms
+
+
+def init_random_data(db, number_of_users, number_of_properties, number_of_rooms):
+
+    from flask import Flask
+    from ShuffleShackApp.config import DevelopmentConfig
+
+    results = []
+    app = Flask(__name__)
+    app.config.from_object(DevelopmentConfig)
+    db.init_app(app)
+    with app.app_context():
+
+        results = []
+
+        attempt, max_attempts, random_users = 0, 5, []
+        while attempt < max_attempts and number_of_users > 0:
+
+            try:
+                random_users = create_random_users(number_of_users)
+                db.session.add_all(random_users)
+                db.session.commit()
+                results.append(f"Added {number_of_users} random users to the database.")
+                break
+
+            except IntegrityError:
+                db.session.rollback()
+                attempt += 1
+                print(f"Attempt {attempt} failed due to a unique constraint violation. Retrying...")
+
+        if len(results) == 0:
+            results.append(f"Failed to add {number_of_users} random users to the database after {max_attempts} attempts.")
+        
+        attempt, max_attempts, random_properties = 0, 5, []
+        while attempt < max_attempts and number_of_properties > 0:
+
+            try:
+                random_properties = create_random_properties(number_of_properties, random_users)
+                db.session.add_all(random_properties)
+                db.session.commit()
+                results.append(f"Added {number_of_properties} random properties to the database.")
+                break
+
+            except IntegrityError:
+                db.session.rollback()
+                attempt += 1
+                print(f"Attempt {attempt} failed due to a unique constraint violation. Retrying...")
+        
+        if len(results) == 1:
+            results.append(f"Failed to add {number_of_properties} random properties to the database after {max_attempts} attempts.")
+        
+        attempt, max_attempts, random_rooms = 0, 5, []
+        while attempt < max_attempts and number_of_rooms > 0:
+
+            try:
+                random_rooms = create_random_rooms(number_of_rooms, random_properties)
+                db.session.add_all(random_rooms)
+                db.session.commit()
+                results.append(f"Added {number_of_rooms} random rooms to the database.")
+                break
+
+            except IntegrityError:
+                db.session.rollback()
+                attempt += 1
+                print(f"Attempt {attempt} failed due to a unique constraint violation. Retrying...")
+        
+        if len(results) == 2:
+            results.append(f"Failed to add {number_of_rooms} random rooms to the database after {max_attempts} attempts.")
+        
+        # attempt, max_attempts, random_bookings = 0, 5, []
+        # while attempt < max_attempts and number_of_bookings > 0:
+
+        #     try:
+        #         random_bookings = create_random_bookings(number_of_bookings, random_users, random_rooms)
+        #         db.session.add_all(random_bookings)
+        #         db.session.commit()
+        #         results.append(f"Added {number_of_bookings} random bookings to the database.")
+        #         break
+
+        #     except IntegrityError:
+        #         db.session.rollback()
+        #         attempt += 1
+        #         print(f"Attempt {attempt} failed due to a unique constraint violation. Retrying...")
+        
+        # if len(results) == 3:
+        #     results.append(f"Failed to add {number_of_bookings} random bookings to the database after {max_attempts} attempts.")
+
+        db.session.remove()
+    return results
