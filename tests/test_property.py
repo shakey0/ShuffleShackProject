@@ -1,5 +1,6 @@
 from ShuffleShackApp.models.property import Property
 
+
 def test_property_creation(test_app, test_client, seed_test_database):
 
     property = Property.query.filter_by(name='Test Property').first()
@@ -17,11 +18,11 @@ def test_property_creation(test_app, test_client, seed_test_database):
     assert property.type == 'House'
     assert property.description == 'A test property'
     assert property.check_in_from == 12
-    assert property.check_in_to == 14
+    assert property.check_in_to == 24
     assert property.check_out == 10
     assert property.cancel_period == 24
     assert property.meals == {'Breakfast': {'Croissant & Coffee': 0}}
-    assert property.min_age == 18
+    assert property.min_age == 0
     assert property.min_stay == 1
     assert property.host_pets == {'Cat': 1}
     assert property.guest_pets == {}
@@ -43,3 +44,6 @@ def test_property_creation(test_app, test_client, seed_test_database):
     assert 'Cat' in property.host_pets
     assert not property.guest_pets
     assert property.extras
+
+    assert property.__eq__(Property.query.filter_by(name='Test Property').first()) is True
+    assert property.__repr__() == '<Property 1 Test Property>'

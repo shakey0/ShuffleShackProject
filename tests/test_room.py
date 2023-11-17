@@ -1,10 +1,11 @@
 from ShuffleShackApp.models.room import Room
 from datetime import date
 
+
 def test_room_creation(test_app, test_client, seed_test_database):
 
     room = Room.query.filter_by(name='Cozy Suite').first()
-    
+
     assert room is not None
     assert room.id == 1
     assert room.start_date == date(2023, 2, 15)
@@ -26,3 +27,6 @@ def test_room_creation(test_app, test_client, seed_test_database):
     assert room.extras['Fold out bed'] != 0
     assert 'Cot' in room.extras
     assert room.extras['Cot'] > 0
+
+    assert room.__eq__(Room.query.filter_by(name='Cozy Suite').first()) is True
+    assert room.__repr__() == '<Room 1 Cozy Suite>'

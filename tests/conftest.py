@@ -3,7 +3,7 @@ from flask import Flask
 from ShuffleShackApp import db
 from ShuffleShackApp.config import TestingConfig
 from ShuffleShackApp.models.test_table import RunTable
-from seed_data import init_user, init_property, init_room
+from seed_data import init_users, init_properties, init_rooms, init_bookings
 
 @pytest.fixture(scope='function')
 def test_app():
@@ -30,6 +30,7 @@ def seed_test_database_for_test(test_app):
 @pytest.fixture(scope='function')
 def seed_test_database(test_app):
     with test_app.app_context():
-        init_user(db)
-        init_property(db)
-        init_room(db)
+        init_users(db)
+        init_properties(db)
+        init_rooms(db)
+        init_bookings(db)
