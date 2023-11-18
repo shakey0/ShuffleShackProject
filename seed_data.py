@@ -27,6 +27,7 @@ def init_users(db):
 
 def init_properties(db):
     test_property1 = Property(
+        display_image_url='test_property_image.webp',
         country='Testland',
         city='Testville',
         address_1='1 Test Street',
@@ -57,6 +58,7 @@ def init_properties(db):
         user_id=1
     )
     test_property2 = Property(
+        display_image_url='test_property_image.webp',
         country='Sampleland',
         city='Example City',
         address_1='123 Example Lane',
@@ -491,7 +493,7 @@ def create_random_users(number_of_users):
             password=b'secret',
             d_o_b=date(random.randint(1950, 2000), random.randint(1, 12), random.randint(1, 28)),
             nationality='Testland', 
-            t_bookings=0, 
+            t_bookings=random.randint(0, 20), 
             no_shows=0, 
             guest_complaints=0, 
             host_complaints=0, 
@@ -525,13 +527,14 @@ def create_random_properties(number_of_properties, random_users):
         meals = {'Breakfast': {'Bagel & Tea': 0, 'Full English': 500}}
         extras = {'City tour': 1200, 'Airport transfer for up to 4 people': 400, 'Late check-out until 4 pm': 2000, 'Cooking class': 1500, 'Massage': 2000}
         review_data = {
-            'average_rating': random.randint(0, 50),
-            'number_of_reviews': random.randint(0, 50),
+            'average_rating': random.randint(10, 50),
+            'number_of_reviews': random.randint(10, 50),
             'ratings': {'5': random.randint(0, 10), '4': random.randint(0, 10), '3': random.randint(0, 10), '2': random.randint(0, 10), '1': random.randint(0, 10)},
-            'section_averages': {'food': random.randint(0, 50), 'host': random.randint(0, 50), 'room': random.randint(0, 50), 'comfort': random.randint(0, 50), 'location': random.randint(0, 50), 'property': random.randint(0, 50), 'cleanliness': random.randint(0, 50)}
+            'section_averages': {'food': random.randint(10, 50), 'host': random.randint(10, 50), 'room': random.randint(10, 50), 'comfort': random.randint(10, 50), 'location': random.randint(10, 50), 'property': random.randint(10, 50), 'cleanliness': random.randint(10, 50)}
         }
 
         property = Property(
+            display_image_url='test_property_image.webp',
             country=country,
             city=city,
             address_1=address_1,
@@ -548,7 +551,7 @@ def create_random_properties(number_of_properties, random_users):
             cancel_period=cancel_period,
             meals=meals,
             min_age=0,
-            min_stay=2,
+            min_stay=random.randint(1, 3),
             host_pets={},
             guest_pets={'Dog': True, 'Cat': True},
             pets_notice='We welcome pets. Please inform us by adding it to your booking.',

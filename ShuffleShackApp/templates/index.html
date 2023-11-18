@@ -1,4 +1,27 @@
 {% extends 'layout.html' %}
 {% block content %}
-<h1>Homepage</h1>
+<div class="properties-container">
+    {% for property, room in properties_and_rooms %}
+    <div class="property-box">
+        <div class="property-image">
+            <img class="image-tag" src="{{ url_for('static', filename='uploads/' + property.display_image_url) }}" alt="picture">
+        </div>
+        <div class="property-info">
+            <div class="property-name">
+                <h3>{{ property.name }}</h3>
+            </div>
+            <div class="property-location">
+                <p><i>{{ property.city }}, {{ property.country }}</i></p>
+            </div>
+            <div class="property-description">
+                <p>{{ property.description }}</p>
+            </div>
+            <div class="from-price">
+                <p>From £{{ room.price / 100 }} per night</p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
 {% endblock %}

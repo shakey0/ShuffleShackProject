@@ -7,6 +7,7 @@ def test_property_creation(test_app, test_client, seed_test_database):
 
     assert property is not None
     assert property.id == 1
+    assert property.display_image_url == 'test_property_image.webp'
     assert property.country == 'Testland'
     assert property.city == 'Testville'
     assert property.address_1 == '1 Test Street'

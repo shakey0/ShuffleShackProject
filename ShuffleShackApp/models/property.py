@@ -5,6 +5,7 @@ class Property(db.Model):
     __tablename__ = 'properties'
 
     id = db.Column(db.Integer, primary_key=True)
+    display_image_url = db.Column(db.String)
     country = db.Column(db.String)
     city = db.Column(db.String)
     address_1 = db.Column(db.String)
