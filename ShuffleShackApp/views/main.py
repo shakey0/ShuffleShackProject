@@ -44,6 +44,10 @@ def get_popular_properties():
     return properties
 
 
+def format_price(price):
+    return f'{price/100:.2f}'
+
+
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[InputRequired(), Length(min=6, max=30)], render_kw={"placeholder": "Username"})
     password = PasswordField('Password', validators=[InputRequired(), Length(min=8, max=30)], render_kw={"placeholder": "Password"})
@@ -57,4 +61,4 @@ def index():
 
     properties_and_rooms = get_popular_properties()
 
-    return render_template('index.html', properties_and_rooms=properties_and_rooms)
+    return render_template('index.html', properties_and_rooms=properties_and_rooms, format_price=format_price)

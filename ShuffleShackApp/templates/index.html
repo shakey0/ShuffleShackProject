@@ -17,7 +17,7 @@
                 <p>{{ property.description }}</p>
             </div>
             <div class="from-price">
-                <p>From £{{ room.price / 100 }} per night</p>
+                <p>From £{{ format_price(room.price) }} per night</p>
             </div>
         </div>
     </div>
