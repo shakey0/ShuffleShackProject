@@ -1,0 +1,145 @@
+.main-menu-box-unauth, .main-menu-box-auth, .login-box, .register-box {
+    border: solid 1px rgb(103, 50, 0);
+    background-color: rgb(255, 247, 232);
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+    align-items: center;
+}
+
+.main-menu-box-unauth {
+    width: 300px;
+    height: 200px;
+}
+
+.main-menu-box-auth {
+    width: 300px;
+    height: 300px;
+}
+
+.menu-button-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 26px 0px;
+}
+
+.menu-button-container button {
+    display: block;
+    margin: auto;
+    width: 75%;
+    height: 50px;
+    border: 2px solid #8f7a61; 
+    border-radius: 10px;
+    background-color: #ffdea1; 
+    cursor: pointer;
+    font-size: 22px;
+    font-weight: bold;
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    transition: background-color 0.3s;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+    transform: translateY(-1px);;
+}
+
+.menu-button-container button:hover {
+    background-color: #eecf95; 
+}
+
+.cancel-button {
+    font-size: 2.4em;
+    font-family: cursive;
+    color: crimson;
+    top: -14px;
+    right: 10px;
+}
+
+.cancel-button:hover {
+    color: darkred;
+}
+
+.login-box {
+    width: 300px;
+    height: 250px;
+    padding: 15px 20px;
+}
+
+.register-box {
+    width: 400px;
+    height: 566px;
+    padding: 15px 20px;
+}
+
+.login-box-header, .register-box-header {
+    text-align: center;
+    font-size: 1.2em;
+    padding-bottom: 10px;
+    border-bottom: solid 1px rgb(103, 50, 0);
+}
+
+.login-box-content, .register-box-content {
+    margin-top: 20px;
+    font-size: 1.1em;
+}
+
+.register-box-content {
+    height: 400px;
+    padding-right: 10px;
+    overflow-y: auto;
+}
+
+.login-box-content input, .register-box-content input {
+    width: 100%;
+    margin-bottom: 15px;
+    padding: 1px 6px;
+    border: 2px solid #b3aca3;  
+    border-radius: 5px;
+    font-size: 16px;
+    height: 36px;
+    outline: none;
+}
+
+.login-box-footer input, .register-box-footer input {
+    width: 100%;
+    height: 44px;
+    border: 2px solid #b3aca3; 
+    border-radius: 10px;
+    background-color: #ffdea1; 
+    cursor: pointer;
+    font-size: 24px;
+    font-weight: bold;
+    text-decoration: none; 
+    transition: background-color 0.3s;
+    white-space: nowrap;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+    transform: translateY(-1px);
+}
+
+.register-box-footer input {
+    margin-top: 20px;
+}
+
+.login-box-footer input:hover, .register-box-footer input:hover {
+    background-color: #eecf95; 
+}
+
+/* Always display scrollbar for Webkit browsers (Chrome, Safari) */
+.register-box-content::-webkit-scrollbar {
+    width: 12px;
+}
+
+.register-box-content::-webkit-scrollbar-thumb {
+    background-color: rgb(242, 215, 190);
+    border-radius: 6px;
+}
+
+.register-box-content::-webkit-scrollbar-track {
+    background-color: rgb(255, 239, 219);
+}
+
+/* Always display scrollbar for Firefox */
+.register-box-content {
+    scrollbar-width: thin;
+    scrollbar-color: #ccc #f7f7f7;
+}
