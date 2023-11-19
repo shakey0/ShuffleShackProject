@@ -1,16 +1,25 @@
 
 document.addEventListener('DOMContentLoaded', function() {
 
-    const openBoxButtons = document.querySelectorAll('[data-menu-target], [data-login-button-target], [data-register-button-target]');
+    const openBoxButtons = document.querySelectorAll('[data-menu-target]');
+    const openBoxButtonsOver = document.querySelectorAll('[data-login-button-target], [data-register-button-target]');
     const cancelBoxButtons = document.querySelectorAll('[data-cancel-button]');
     const cancelBoxButtonsOver = document.querySelectorAll('[data-cancel-button-over]');
     const overlay = document.getElementById('overlay');
 
     openBoxButtons.forEach(button => {
         button.addEventListener('click', () => {
-            const boxSelector = button.dataset.menuTarget || button.dataset.loginButtonTarget || button.dataset.registerButtonTarget;
+            const boxSelector = button.dataset.menuTarget;
             const box = document.querySelector(boxSelector);
             openBox(box);
+        });
+    });
+
+    openBoxButtonsOver.forEach(button => {
+        button.addEventListener('click', () => {
+            const boxSelector = button.dataset.loginButtonTarget || button.dataset.registerButtonTarget;
+            const box = document.querySelector(boxSelector);
+            openBoxOver(box);
         });
     });
 
@@ -42,12 +51,19 @@ document.addEventListener('DOMContentLoaded', function() {
         if (box == null) return;
         box.classList.add('active');
         overlay.classList.add('active');
+        toggleScrollLock(true);
+    }
+
+    function openBoxOver(box) {
+        if (box == null) return;
+        box.classList.add('active');
     }
 
     function closeBox(box) {
         if (box == null) return;
         box.classList.remove('active');
         overlay.classList.remove('active');
+        toggleScrollLock(false);
     }
 
     function closeBoxOver(box) {
@@ -55,4 +71,20 @@ document.addEventListener('DOMContentLoaded', function() {
         box.classList.remove('active');
     }
 
+    function toggleScrollLock(isLocked) {
+        const body = document.body;
+    
+        if (isLocked) {
+            const scrollY = window.scrollY;
+            body.style.position = 'fixed';
+            body.style.top = `-${scrollY}px`;
+            body.style.width = '100%';
+        } else {
+            const scrollY = body.style.top;
+            body.style.position = '';
+            body.style.top = '';
+            window.scrollTo(0, parseInt(scrollY || '0') * -1);
+        }
+    }
+    
 });
