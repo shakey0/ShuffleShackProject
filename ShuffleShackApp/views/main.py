@@ -8,6 +8,7 @@ from ShuffleShackApp.models.property import Property
 from ShuffleShackApp.models.room import Room
 from ShuffleShackApp.models.booking import Booking
 from sqlalchemy.sql.expression import func, desc
+import bcrypt
 
 
 main = Blueprint('main', __name__)
@@ -49,16 +50,68 @@ def format_price(price):
 
 
 class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[InputRequired(), Length(min=6, max=30)], render_kw={"placeholder": "Username"})
+    email = StringField('Email', validators=[InputRequired(), Length(min=6, max=30)], render_kw={"placeholder": "Email OR Username"})
     password = PasswordField('Password', validators=[InputRequired(), Length(min=8, max=30)], render_kw={"placeholder": "Password"})
     submit = SubmitField('Login')
 
 
-@main.route('/', methods=['GET', 'POST'])
+class RegisterForm(FlaskForm):
+    first_name = StringField('First Name', validators=[InputRequired(), Length(min=2, max=30)], render_kw={"placeholder": "First Name"})
+    last_name = StringField('Last Name', validators=[InputRequired(), Length(min=2, max=30)], render_kw={"placeholder": "Last Name"})
+    user_name = StringField('Username', validators=[InputRequired(), Length(min=6, max=30)], render_kw={"placeholder": "Username"})
+    email = StringField('Email', validators=[InputRequired(), Email(message='Invalid email'), Length(max=50)], render_kw={"placeholder": "Email"})
+    confirm_email = StringField('Confirm Email', validators=[InputRequired(), Email(message='Invalid email'), EqualTo('email', message='Emails must match')], render_kw={"placeholder": "Confirm Email"})
+    phone_number = StringField('Phone Number', validators=[InputRequired(), Length(min=10, max=20)], render_kw={"placeholder": "Phone Number"})
+    date_of_birth = DateField('Date of Birth', validators=[InputRequired()], render_kw={"placeholder": "Date of Birth"})
+    nationality = StringField('Nationality', validators=[InputRequired()], render_kw={"placeholder": "Nationality"})
+    password = PasswordField('Password', validators=[InputRequired(), Length(min=8, max=30)], render_kw={"placeholder": "Password"})
+    confirm_password = PasswordField('Confirm Password', validators=[InputRequired(), Length(min=8, max=30), EqualTo('password', message='Passwords must match')], render_kw={"placeholder": "Confirm Password"})
+    submit = SubmitField('Register')
+
+
+@main.route('/', methods=['GET'])
 def index():
 
     login_form = LoginForm()
 
+    register_form = RegisterForm()
+
     properties_and_rooms = get_popular_properties()
 
-    return render_template('index.html', properties_and_rooms=properties_and_rooms, format_price=format_price)
+    return render_template('index.html', login_form=login_form, register_form=register_form, properties_and_rooms=properties_and_rooms, format_price=format_price)
+
+
+@main.route('/login', methods=['POST'])
+def login():
+
+    login_form = LoginForm()
+
+    # if login_form.validate_on_submit():
+
+    #     username = login_form.username.data
+    #     password = login_form.password.data
+
+    #     user = User.query.filter_by(email=username).first() or User.query.filter_by(user_name=username).first()
+
+    #     if user and user.password == password:
+    #         return redirect(url_for('main.index'))
+    #     else:
+    #         flash('Invalid username or password', 'danger')
+    #         return redirect(url_for('main.index'))
+
+    # else:
+    #     flash('Invalid username or password', 'danger')
+    #     return redirect(url_for('main.index'))
+
+    print('WE GOT HERE')
+
+    return redirect(url_for('main.index'))
+
+
+@main.route('/register', methods=['POST'])
+def register():
+    print('WE GOT HERE')
+
+    register_form = RegisterForm()
+
+    return redirect(url_for('main.index'))

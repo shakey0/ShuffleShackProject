@@ -87,63 +87,63 @@
     {% endif %}
     <div class="login-box pop-up-box" id="login-box">
         <button data-cancel-button-over class="cancel-button">&times;</button>
-        <form method="POST" action="">
+        <form method="POST" action="/login">
             <div class="login-box-header">
                 <h2>Login</h2>
             </div>
             <div class="login-box-content">
                 <div class="login-box-item">
-                    <input type="email" name="email" placeholder="Email OR Username">
+                    {{ login_form.email }}
                 </div>
                 <div class="login-box-item">
-                    <input type="password" name="password" placeholder="Password">
+                    {{ login_form.password }}
                 </div>
             </div>
             <div class="login-box-footer">
-                <input type="submit" value="Login">
+                {{ login_form.submit }}
             </div>
         </form>
     </div>
     <div class="register-box pop-up-box" id="register-box">
         <button data-cancel-button-over class="cancel-button">&times;</button>
-        <form method="POST" action="">
+        <form method="POST" action="/register">
             <div class="register-box-header">
                 <h2>Register</h2>
             </div>
             <div class="register-box-content">
                 <div class="register-box-item">
-                    <input type="text" name="first_name" placeholder="First Name">
+                    {{ register_form.first_name }}
                 </div>
                 <div class="register-box-item">
-                    <input type="text" name="last_name" placeholder="Last Name">
+                    {{ register_form.last_name }}
                 </div>
                 <div class="register-box-item">
-                    <input type="text" name="username" placeholder="Username">
+                    {{ register_form.user_name }}
                 </div>
                 <div class="register-box-item">
-                    <input type="email" name="email" placeholder="Email">
+                    {{ register_form.email }}
                 </div>
                 <div class="register-box-item">
-                    <input type="email" name="confirm_email" placeholder="Confirm Email">
+                    {{ register_form.confirm_email }}
                 </div>
                 <div class="register-box-item">
-                    <input type="tel" name="phone_number" placeholder="Phone Number">
+                    {{ register_form.phone_number }}
                 </div>
                 <div class="register-box-item">
-                    <input type="date" name="date_of_birth" placeholder="Date of Birth">
+                    {{ register_form.date_of_birth }}
                 </div>
                 <div class="nationality">
-                    <input type="text" name="nationality" placeholder="Nationality">
+                    {{ register_form.nationality }}
                 </div>
                 <div class="register-box-item">
-                    <input type="password" name="password" placeholder="Password">
+                    {{ register_form.password }}
                 </div>
                 <div class="register-box-item">
-                    <input type="password" name="confirm_password" placeholder="Confirm Password">
+                    {{ register_form.confirm_password }}
                 </div>
             </div>
             <div class="register-box-footer">
-                <input type="submit" value="Register">
+                {{ register_form.submit }}
             </div>
         </form>
     </div>
