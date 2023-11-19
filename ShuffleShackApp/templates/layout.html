@@ -12,6 +12,10 @@
 </head>
 <body>
     <nav>
+        <div class="small-screen-top">
+            <a href="">Home</a>
+            <button data-menu-target="#main-menu-box">Menu</button>
+        </div>
         <div class="navbar">
             <div class="nav-box-left">
                 <div class="home-button-box">
@@ -53,7 +57,7 @@
                     {% if 1 == 2 %}
                     <div class="user-name">User</div>
                     {% else %}
-                    <div class="user-name">Menu</div>
+                    <div class="user-name" data-menu-target="#main-menu-box">Menu</div>
                     {% endif %}
                     <button class="menu-button" data-menu-target="#main-menu-box">
                         <svg class="menu-icon" viewBox="0 0 100 80">
