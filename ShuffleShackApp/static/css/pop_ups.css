@@ -33,6 +33,7 @@
     visibility: visible;
     pointer-events: all;
     transition: opacity 200ms ease-in-out, visibility 200ms ease-in-out;
+    z-index: 9;
 }
 
 /* &times; button for pop up boxes */

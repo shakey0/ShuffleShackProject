@@ -88,6 +88,7 @@
     <div class="login-box pop-up-box" id="login-box">
         <button data-cancel-button-over class="cancel-button">&times;</button>
         <form method="POST" action="/login">
+            {{ login_form.csrf_token(id='csrf_token_login') }}
             <div class="login-box-header">
                 <h2>Login</h2>
             </div>
@@ -106,7 +107,8 @@
     </div>
     <div class="register-box pop-up-box" id="register-box">
         <button data-cancel-button-over class="cancel-button">&times;</button>
-        <form method="POST" action="/register">
+        <form id="registrationForm" method="POST" action="/register">
+            {{ register_form.csrf_token(id='csrf_token_register') }}
             <div class="register-box-header">
                 <h2>Register</h2>
             </div>
@@ -124,9 +126,6 @@
                     {{ register_form.email }}
                 </div>
                 <div class="register-box-item">
-                    {{ register_form.confirm_email }}
-                </div>
-                <div class="register-box-item">
                     {{ register_form.phone_number }}
                 </div>
                 <div class="register-box-item">
@@ -136,9 +135,11 @@
                     {{ register_form.nationality }}
                 </div>
                 <div class="register-box-item">
+                    <div id="passwordError" style="color: rgb(255, 119, 0); margin-bottom: 5px;"></div>
                     {{ register_form.password }}
                 </div>
                 <div class="register-box-item">
+                    <div id="confirmPasswordError" style="color: rgb(255, 119, 0); margin-bottom: 5px;"></div>
                     {{ register_form.confirm_password }}
                 </div>
             </div>

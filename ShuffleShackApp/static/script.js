@@ -87,4 +87,55 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
+
+    var form = document.getElementById('registrationForm');
+    var passwordInput = document.getElementById('password');
+    var confirmPasswordInput = document.getElementById('confirm_password');
+    var passwordError = document.getElementById('passwordError');
+    var confirmPasswordError = document.getElementById('confirmPasswordError');
+
+    function validatePassword() {
+        var errors = [];
+        var value = passwordInput.value;
+        if (!/[a-z]/.test(value)) errors.push("Must contain a lowercase letter.");
+        if (!/[A-Z]/.test(value)) errors.push("Must contain an uppercase letter.");
+        if (!/[0-9]/.test(value)) errors.push("Must contain a digit.");
+        if (!/[!@#$%^&*(),.?":{}|<>]/.test(value)) errors.push("Must contain a special character.");
+        if (value.length < 8) errors.push("Must be at least 8 characters long.");
+
+        passwordError.innerHTML = errors.join('<br>');
+        if(errors.length > 0) {
+            passwordError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        return errors.length === 0; // True if no errors
+    }
+
+    function validateConfirmPassword() {
+        var errors = [];
+        if (confirmPasswordInput.value !== passwordInput.value) {
+            errors.push("Passwords must match.");
+        }
+        confirmPasswordError.innerHTML = errors.join('<br>');
+        if(errors.length > 0) {
+            passwordError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        return errors.length === 0; // True if no errors
+    }
+
+    form.addEventListener('submit', function(event) {
+        var isPasswordValid = validatePassword();
+        var isConfirmPasswordValid = validateConfirmPassword();
+        if (!isPasswordValid || !isConfirmPasswordValid) {
+            event.preventDefault(); // Stop form submission
+            if (!isPasswordValid) {
+                passwordError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else if (!isConfirmPasswordValid) {
+                confirmPasswordError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+    });
+
+    passwordInput.addEventListener('input', validatePassword);
+    confirmPasswordInput.addEventListener('input', validateConfirmPassword);
+
 });

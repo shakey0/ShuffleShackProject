@@ -8,6 +8,8 @@ from ShuffleShackApp.models.property import Property
 from ShuffleShackApp.models.room import Room
 from ShuffleShackApp.models.booking import Booking
 from sqlalchemy.sql.expression import func, desc
+from flask_login import login_user, logout_user, current_user, login_required
+import re
 import bcrypt
 
 
@@ -49,10 +51,27 @@ def format_price(price):
     return f'{price/100:.2f}'
 
 
+class PasswordComplexityValidator(object):
+    def __init__(self, message=None):
+        if not message:
+            message = u'Password must include at least one lowercase letter, one uppercase letter, one digit, and one special character.'
+        self.message = message
+
+    def __call__(self, form, field):
+        if not re.search("[a-z]", field.data):
+            raise ValidationError(self.message)
+        elif not re.search("[A-Z]", field.data):
+            raise ValidationError(self.message)
+        elif not re.search("[0-9]", field.data):
+            raise ValidationError(self.message)
+        elif not re.search("[!@#$%^&*(),.?\":{}|<>]", field.data):
+            raise ValidationError(self.message)
+
+
 class LoginForm(FlaskForm):
-    email = StringField('Email', validators=[InputRequired(), Length(min=6, max=30)], render_kw={"placeholder": "Email OR Username"})
-    password = PasswordField('Password', validators=[InputRequired(), Length(min=8, max=30)], render_kw={"placeholder": "Password"})
-    submit = SubmitField('Login')
+    email = StringField('Email', validators=[InputRequired(), Length(min=6, max=30)], render_kw={"placeholder": "Email OR Username", "id": "email_login"})
+    password = PasswordField('Password', validators=[InputRequired(), Length(min=8, max=30)], render_kw={"placeholder": "Password", "id": "password_login"})
+    submit = SubmitField('Login', render_kw={"id": "submit_login"})
 
 
 class RegisterForm(FlaskForm):
@@ -60,11 +79,10 @@ class RegisterForm(FlaskForm):
     last_name = StringField('Last Name', validators=[InputRequired(), Length(min=2, max=30)], render_kw={"placeholder": "Last Name"})
     user_name = StringField('Username', validators=[InputRequired(), Length(min=6, max=30)], render_kw={"placeholder": "Username"})
     email = StringField('Email', validators=[InputRequired(), Email(message='Invalid email'), Length(max=50)], render_kw={"placeholder": "Email"})
-    confirm_email = StringField('Confirm Email', validators=[InputRequired(), Email(message='Invalid email'), EqualTo('email', message='Emails must match')], render_kw={"placeholder": "Confirm Email"})
     phone_number = StringField('Phone Number', validators=[InputRequired(), Length(min=10, max=20)], render_kw={"placeholder": "Phone Number"})
     date_of_birth = DateField('Date of Birth', validators=[InputRequired()], render_kw={"placeholder": "Date of Birth"})
     nationality = StringField('Nationality', validators=[InputRequired()], render_kw={"placeholder": "Nationality"})
-    password = PasswordField('Password', validators=[InputRequired(), Length(min=8, max=30)], render_kw={"placeholder": "Password"})
+    password = PasswordField('Password', validators=[InputRequired(), Length(min=8, max=30), PasswordComplexityValidator()], render_kw={"placeholder": "Password"})
     confirm_password = PasswordField('Confirm Password', validators=[InputRequired(), Length(min=8, max=30), EqualTo('password', message='Passwords must match')], render_kw={"placeholder": "Confirm Password"})
     submit = SubmitField('Register')
 
@@ -103,15 +121,24 @@ def login():
     #     flash('Invalid username or password', 'danger')
     #     return redirect(url_for('main.index'))
 
-    print('WE GOT HERE')
+    print('WE GOT HERE LOGIN')
 
     return redirect(url_for('main.index'))
 
 
 @main.route('/register', methods=['POST'])
 def register():
-    print('WE GOT HERE')
+    
 
     register_form = RegisterForm()
+
+    if register_form.validate_on_submit():
+        print('WE GOT HERE RESISTER')
+    else:
+        print('SOMETHING WENT WRONG')
+        for fieldName, errorMessages in register_form.errors.items():
+            for err in errorMessages:
+                print(f"Error in {fieldName}: {err}")
+
 
     return redirect(url_for('main.index'))
