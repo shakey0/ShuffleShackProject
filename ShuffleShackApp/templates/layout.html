@@ -54,8 +54,8 @@
             </div>
             <div class="nav-box-right">
                 <div class="user-info">
-                    {% if 1 == 2 %}
-                    <div class="user-name">User</div>
+                    {% if user.is_authenticated %}
+                    <div class="user-name">{{ first_three_characters(user.user_name) }}</div>
                     {% else %}
                     <div class="user-name" data-menu-target="#main-menu-box">Menu</div>
                     {% endif %}
@@ -71,7 +71,7 @@
             </div>
         </div>
     {% block content %}{% endblock %}
-    {% if 1 == 1 %}
+    {% if not user.is_authenticated %}
         <div class="main-menu-box-unauth pop-up-box" id="main-menu-box">
             <button data-cancel-button class="cancel-button">&times;</button>
             <div class="menu-button-container">
@@ -84,8 +84,12 @@
             <button data-cancel-button class="cancel-button">&times;</button>
             <div class="menu-button-container">
                 <button class="profile-button">Profile</button>
+                <button class="bookings-button">Your Bookings</button>
                 <button class="hosting-button">Your Hosting</button>
-                <button class="logout-button">Logout</button>
+                <form class="logout-form" action="/logout" method="POST">
+                    {{ logout_form.csrf_token(id='csrf_token_logout') }}
+                    {{ logout_form.submit }}
+                </form>
             </div>
         </div>
     {% endif %}
@@ -99,6 +103,9 @@
             <div class="login-box-content">
                 <div class="login-box-item">
                     {{ login_form.email }}
+                </div>
+                <div class="login-box-item">
+                    <div id="login-error-message" style="color: rgb(255, 119, 0); transform: translateY(-9px);"></div>
                 </div>
                 <div class="login-box-item">
                     {{ login_form.password }}
@@ -139,11 +146,11 @@
                     {{ register_form.nationality }}
                 </div>
                 <div class="register-box-item">
-                    <div id="passwordError" style="color: rgb(255, 119, 0); margin-bottom: 5px;"></div>
+                    <div id="passwordError" style="color: rgb(255, 119, 0); transform: translateY(-5px);"></div>
                     {{ register_form.password }}
                 </div>
                 <div class="register-box-item">
-                    <div id="confirmPasswordError" style="color: rgb(255, 119, 0); margin-bottom: 5px;"></div>
+                    <div id="confirmPasswordError" style="color: rgb(255, 119, 0); transform: translateY(-5px);"></div>
                     {{ register_form.confirm_password }}
                 </div>
             </div>
@@ -153,6 +160,7 @@
         </form>
     </div>
     <div id="overlay"></div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>

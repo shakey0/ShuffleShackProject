@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for
+from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, SelectField, IntegerField, DateField
 from wtforms.validators import InputRequired, DataRequired, Length, Email, EqualTo, ValidationError
@@ -51,6 +51,10 @@ def format_price(price):
     return f'{price/100:.2f}'
 
 
+def first_three_characters(user_name):
+    return user_name[:3]
+
+
 class PasswordComplexityValidator(object):
     def __init__(self, message=None):
         if not message:
@@ -69,8 +73,8 @@ class PasswordComplexityValidator(object):
 
 
 class LoginForm(FlaskForm):
-    email = StringField('Email', validators=[InputRequired(), Length(min=6, max=30)], render_kw={"placeholder": "Email OR Username", "id": "email_login"})
-    password = PasswordField('Password', validators=[InputRequired(), Length(min=8, max=30)], render_kw={"placeholder": "Password", "id": "password_login"})
+    email = StringField('Email', validators=[InputRequired(), Length(min=1, max=30)], render_kw={"placeholder": "Email OR Username", "id": "email_login"})
+    password = PasswordField('Password', validators=[InputRequired(), Length(min=1, max=30)], render_kw={"placeholder": "Password", "id": "password_login"})
     submit = SubmitField('Login', render_kw={"id": "submit_login"})
 
 
@@ -87,6 +91,10 @@ class RegisterForm(FlaskForm):
     submit = SubmitField('Register')
 
 
+class LogoutForm(FlaskForm):
+    submit = SubmitField('Logout', render_kw={"id": "submit_logout"})
+
+
 @main.route('/', methods=['GET'])
 def index():
 
@@ -94,51 +102,75 @@ def index():
 
     register_form = RegisterForm()
 
+    logout_form = LogoutForm()
+
     properties_and_rooms = get_popular_properties()
 
-    return render_template('index.html', login_form=login_form, register_form=register_form, properties_and_rooms=properties_and_rooms, format_price=format_price)
+    return render_template('index.html', login_form=login_form, register_form=register_form,
+                            logout_form=logout_form, user=current_user, properties_and_rooms=properties_and_rooms,
+                            format_price=format_price, first_three_characters=first_three_characters)
 
 
 @main.route('/login', methods=['POST'])
 def login():
-
     login_form = LoginForm()
 
-    # if login_form.validate_on_submit():
+    if login_form.validate_on_submit():
+        print('WE GOT HERE - LOGIN')
+        
+        credential = login_form.email.data
+        user = User.query.filter((User.email == credential) | (User.user_name == credential)).first()
 
-    #     username = login_form.username.data
-    #     password = login_form.password.data
+        if user:
+            print('USER FOUND')
+            if bcrypt.checkpw(login_form.password.data.encode('utf-8'), user.password):
+                print('PASSWORD MATCHED')
+                login_user(user)
+                return jsonify(success=True)
+            else:
+                return jsonify(success=False, error="Something didn\'t match! Please try again.")
+        else:
+            return jsonify(success=False, error="Something didn\'t match! Please try again.")
 
-    #     user = User.query.filter_by(email=username).first() or User.query.filter_by(user_name=username).first()
+    elif login_form.email.data == '':
+        return jsonify(success=False, error="Please enter an email or username.")
 
-    #     if user and user.password == password:
-    #         return redirect(url_for('main.index'))
-    #     else:
-    #         flash('Invalid username or password', 'danger')
-    #         return redirect(url_for('main.index'))
+    elif login_form.password.data == '':
+        return jsonify(success=False, error="Please enter a password.")
 
-    # else:
-    #     flash('Invalid username or password', 'danger')
-    #     return redirect(url_for('main.index'))
-
-    print('WE GOT HERE LOGIN')
-
+    for fieldName, errorMessages in login_form.errors.items():
+        for err in errorMessages:
+            print(f"Error in {fieldName}: {err}")
     return redirect(url_for('main.index'))
 
 
 @main.route('/register', methods=['POST'])
 def register():
-    
 
     register_form = RegisterForm()
 
     if register_form.validate_on_submit():
-        print('WE GOT HERE RESISTER')
+        print('WE GOT HERE - RESISTER')
+        hashed_password = bcrypt.hashpw(register_form.password.data.encode('utf-8'), bcrypt.gensalt())
+        user = User(first_name=register_form.first_name.data, last_name=register_form.last_name.data,
+                    user_name=register_form.user_name.data, email=register_form.email.data,
+                    phone_number=register_form.phone_number.data, password=hashed_password,
+                    d_o_b=register_form.date_of_birth.data, nationality=register_form.nationality.data,
+                    t_bookings=0, no_shows=0, guest_complaints=0, host_complaints=0, is_admin=False)
+        db.session.add(user)
+        db.session.commit()
+        login_user(user)
+        return redirect(url_for('main.index'))
+        
     else:
         print('SOMETHING WENT WRONG')
         for fieldName, errorMessages in register_form.errors.items():
             for err in errorMessages:
                 print(f"Error in {fieldName}: {err}")
+        return redirect(url_for('main.index'))
 
 
+@main.route('/logout', methods=['POST'])
+def logout():
+    logout_user()
     return redirect(url_for('main.index'))

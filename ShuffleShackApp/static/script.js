@@ -139,3 +139,35 @@ document.addEventListener('DOMContentLoaded', function() {
     confirmPasswordInput.addEventListener('input', validateConfirmPassword);
 
 });
+
+
+$(document).ready(function(){
+
+    $('#submit_login').on('click', function(event) {
+        event.preventDefault();
+    
+        const $button = $(this);
+        $button.prop('disabled', true);
+        const $form = $button.closest('form');
+    
+        const formData = $form.serialize();
+    
+        $.ajax({
+            url: '/login',
+            type: 'POST',
+            data: formData,
+            success: function(response) {
+                if (response.success) {
+                    window.location.reload();
+                } else {
+                    $('#login-error-message').text(response.error);
+                }
+                $button.prop('disabled', false);
+            },
+            error: function() {
+                $('#login-error-message').text('An unexpected error occurred. Please try again later.');
+                $button.prop('disabled', false);
+            }
+        });
+    });
+});
