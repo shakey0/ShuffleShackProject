@@ -170,4 +170,45 @@ $(document).ready(function(){
             }
         });
     });
+
+    $('#submit_register').on('click', function(event) {
+        event.preventDefault();
+    
+        const $button = $(this);
+        $button.prop('disabled', true);
+        const $form = $button.closest('form');
+    
+        const formData = $form.serialize();
+    
+        $.ajax({
+            url: '/register',
+            type: 'POST',
+            data: formData,
+            success: function(response) {
+                if (response.success) {
+                    window.location.reload();
+                } else {
+                    if (response.error === 'Username already exists.') {
+                        $('#register-username-error-message').text(response.error);
+                    } else if (response.error === 'An account with this email already exists.') {
+                        $('#register-email-error-message').text(response.error);
+                    } else if(response.form_errors){
+                        for (var fieldName in response.form_errors) {
+                            if (response.form_errors.hasOwnProperty(fieldName)) {
+                                // Here, `fieldName` is the key, and `response.form_errors[fieldName]` is the error message array
+                                // You can now display these errors to the user
+                                // For example, you might display them in a div with an ID that corresponds to the fieldName
+                                $('#' + fieldName + '_validation_error').text(response.form_errors[fieldName].join("<br>"));
+                            }
+                        }
+                    }
+                }
+                $button.prop('disabled', false);
+            },
+            error: function() {
+                $('#register-error-message').text('An unexpected error occurred. Please try again later.');
+                $button.prop('disabled', false);
+            }
+        });
+    });
 });

@@ -10,7 +10,7 @@ class User(db.Model, UserMixin):
     last_name = db.Column(db.String(30))
     user_name = db.Column(db.String(30), unique=True)
     email = db.Column(db.String(60), unique=True)
-    phone_number = db.Column(db.String(20), unique=True)
+    phone_number = db.Column(db.String(20))
     password = db.Column(BYTEA)
     d_o_b = db.Column(db.Date)
     nationality = db.Column(db.String(50))

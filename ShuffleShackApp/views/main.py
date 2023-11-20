@@ -8,6 +8,7 @@ from ShuffleShackApp.models.property import Property
 from ShuffleShackApp.models.room import Room
 from ShuffleShackApp.models.booking import Booking
 from sqlalchemy.sql.expression import func, desc
+from sqlalchemy.exc import IntegrityError
 from flask_login import login_user, logout_user, current_user, login_required
 import re
 import bcrypt
@@ -79,16 +80,16 @@ class LoginForm(FlaskForm):
 
 
 class RegisterForm(FlaskForm):
-    first_name = StringField('First Name', validators=[InputRequired(), Length(min=2, max=30)], render_kw={"placeholder": "First Name"})
-    last_name = StringField('Last Name', validators=[InputRequired(), Length(min=2, max=30)], render_kw={"placeholder": "Last Name"})
-    user_name = StringField('Username', validators=[InputRequired(), Length(min=6, max=30)], render_kw={"placeholder": "Username"})
-    email = StringField('Email', validators=[InputRequired(), Email(message='Invalid email'), Length(max=50)], render_kw={"placeholder": "Email"})
-    phone_number = StringField('Phone Number', validators=[InputRequired(), Length(min=10, max=20)], render_kw={"placeholder": "Phone Number"})
-    date_of_birth = DateField('Date of Birth', validators=[InputRequired()], render_kw={"placeholder": "Date of Birth"})
-    nationality = StringField('Nationality', validators=[InputRequired()], render_kw={"placeholder": "Nationality"})
-    password = PasswordField('Password', validators=[InputRequired(), Length(min=8, max=30), PasswordComplexityValidator()], render_kw={"placeholder": "Password"})
-    confirm_password = PasswordField('Confirm Password', validators=[InputRequired(), Length(min=8, max=30), EqualTo('password', message='Passwords must match')], render_kw={"placeholder": "Confirm Password"})
-    submit = SubmitField('Register')
+    first_name = StringField('First Name', validators=[InputRequired(message='Please enter your first name.'), Length(min=2, max=30, message='First name must be between 2 and 30 characters long')], render_kw={"placeholder": "First Name"})
+    last_name = StringField('Last Name', validators=[InputRequired(message='Please enter your last name.'), Length(min=2, max=30, message='Last name must be between 2 and 30 characters long')], render_kw={"placeholder": "Last Name"})
+    user_name = StringField('Username', validators=[InputRequired(message='Please choose a username.'), Length(min=6, max=30, message='Username must be between 6 and 30 characters long')], render_kw={"placeholder": "Username"})
+    email = StringField('Email', validators=[InputRequired(message='Please enter your email.'), Email(message='Invalid email address'), Length(max=50, message='Email must be less than 50 characters long')], render_kw={"placeholder": "Email"})
+    phone_number = StringField('Phone Number', validators=[InputRequired(message='Please enter your phone number.'), Length(min=10, max=20, message='Phone number must be between 10 and 20 characters long')], render_kw={"placeholder": "Phone Number"})
+    date_of_birth = DateField('Date of Birth', validators=[InputRequired(message='Please enter your date of birth.')], render_kw={"placeholder": "Date of Birth"})
+    nationality = StringField('Nationality', validators=[InputRequired(message='Please enter your nationality.')], render_kw={"placeholder": "Nationality"})
+    password = PasswordField('Password', validators=[InputRequired(message='Please enter a password.'), Length(min=8, max=30), PasswordComplexityValidator()], render_kw={"placeholder": "Password"})
+    confirm_password = PasswordField('Confirm Password', validators=[InputRequired(message='Please confirm your password.'), Length(min=8, max=30), EqualTo('password', message='Passwords must match')], render_kw={"placeholder": "Confirm Password"})
+    submit = SubmitField('Register', render_kw={"id": "submit_register"})
 
 
 class LogoutForm(FlaskForm):
@@ -133,10 +134,10 @@ def login():
             return jsonify(success=False, error="Something didn\'t match! Please try again.")
 
     elif login_form.email.data == '':
-        return jsonify(success=False, error="Please enter an email or username.")
+        return jsonify(success=False, error="Please enter your email or username.")
 
     elif login_form.password.data == '':
-        return jsonify(success=False, error="Please enter a password.")
+        return jsonify(success=False, error="Please enter your password.")
 
     for fieldName, errorMessages in login_form.errors.items():
         for err in errorMessages:
@@ -157,17 +158,26 @@ def register():
                     phone_number=register_form.phone_number.data, password=hashed_password,
                     d_o_b=register_form.date_of_birth.data, nationality=register_form.nationality.data,
                     t_bookings=0, no_shows=0, guest_complaints=0, host_complaints=0, is_admin=False)
-        db.session.add(user)
-        db.session.commit()
-        login_user(user)
-        return redirect(url_for('main.index'))
+        try:
+            db.session.add(user)
+            db.session.commit()
+            login_user(user)
+            return jsonify(success=True)
+        except IntegrityError as e:
+            db.session.rollback()  # Rollback the transaction to keep the session clean
+            if 'user_name' in str(e.orig):
+                return jsonify(success=False, error="Username already exists.")
+            elif 'email' in str(e.orig):
+                return jsonify(success=False, error="An account with this email already exists.")
+            else:
+                return jsonify(success=False, error='An error occurred. Please try again.')
         
     else:
         print('SOMETHING WENT WRONG')
         for fieldName, errorMessages in register_form.errors.items():
             for err in errorMessages:
                 print(f"Error in {fieldName}: {err}")
-        return redirect(url_for('main.index'))
+        return jsonify(success=False, error='An error occurred. Please try again.', form_errors=register_form.errors)
 
 
 @main.route('/logout', methods=['POST'])

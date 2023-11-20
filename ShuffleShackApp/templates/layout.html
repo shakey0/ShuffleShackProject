@@ -105,10 +105,10 @@
                     {{ login_form.email }}
                 </div>
                 <div class="login-box-item">
-                    <div id="login-error-message" style="color: rgb(255, 119, 0); transform: translateY(-9px);"></div>
+                    {{ login_form.password }}
                 </div>
                 <div class="login-box-item">
-                    {{ login_form.password }}
+                    <div id="login-error-message" style="color: rgb(255, 119, 0); transform: translateY(-9px);"></div>
                 </div>
             </div>
             <div class="login-box-footer">
@@ -125,31 +125,42 @@
             </div>
             <div class="register-box-content">
                 <div class="register-box-item">
+                    <div id="first_name_validation_error" style="color: rgb(255, 119, 0); margin-top: 5px; transform: translateY(-5px);"></div>
                     {{ register_form.first_name }}
                 </div>
                 <div class="register-box-item">
+                    <div id="last_name_validation_error" style="color: rgb(255, 119, 0); transform: translateY(-5px);"></div>
                     {{ register_form.last_name }}
                 </div>
                 <div class="register-box-item">
+                    <div id="user_name_validation_error" style="color: rgb(255, 119, 0); transform: translateY(-5px);"></div>
+                    <div id="register-username-error-message" style="color: rgb(255, 119, 0); transform: translateY(-5px);"></div>
                     {{ register_form.user_name }}
                 </div>
                 <div class="register-box-item">
+                    <div id="email_validation_error" style="color: rgb(255, 119, 0); transform: translateY(-5px);"></div>
+                    <div id="register-email-error-message" style="color: rgb(255, 119, 0); transform: translateY(-5px);"></div>
                     {{ register_form.email }}
                 </div>
                 <div class="register-box-item">
+                    <div id="phone_number_validation_error" style="color: rgb(255, 119, 0); transform: translateY(-5px);"></div>
                     {{ register_form.phone_number }}
                 </div>
                 <div class="register-box-item">
+                    <div id="date_of_birth_validation_error" style="color: rgb(255, 119, 0); transform: translateY(-5px);"></div>
                     {{ register_form.date_of_birth }}
                 </div>
                 <div class="nationality">
+                    <div id="nationality_validation_error" style="color: rgb(255, 119, 0); transform: translateY(-5px);"></div>
                     {{ register_form.nationality }}
                 </div>
                 <div class="register-box-item">
+                    <div id="password_validation_error" style="color: rgb(255, 119, 0); transform: translateY(-5px);"></div>
                     <div id="passwordError" style="color: rgb(255, 119, 0); transform: translateY(-5px);"></div>
                     {{ register_form.password }}
                 </div>
                 <div class="register-box-item">
+                    <div id="confirm_password_validation_error" style="color: rgb(255, 119, 0); transform: translateY(-5px);"></div>
                     <div id="confirmPasswordError" style="color: rgb(255, 119, 0); transform: translateY(-5px);"></div>
                     {{ register_form.confirm_password }}
                 </div>
