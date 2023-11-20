@@ -30,24 +30,24 @@
                     <div class="center-left">
                         <div class="nav-item">
                             <p>Check in</p>
-                            <input type="date" placeholder="Start date">
+                            {{ search_form.check_in }}
                         </div>
                         <div class="nav-item">
                             <p>Check out</p>
-                            <input type="date" placeholder="End date">
+                            {{ search_form.check_out }}
                         </div>
                     </div>
                     <div class="center-right">
                         <div class="nav-item">
                             <p>City</p>
-                            <input type="text" placeholder="Location">
+                            {{ search_form.city }}
                         </div>
                         <div class="nav-item with-submit">
                             <div>
                                 <p>Guests</p>
-                                <input type="number" placeholder="2">
+                                {{ search_form.guests }}
                             </div>
-                            <input type="submit" value="Go">
+                            {{ search_form.submit }}
                         </div>
                     </div>
                 </form>
