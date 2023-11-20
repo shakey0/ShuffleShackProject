@@ -13,3 +13,5 @@ flask-restful
 flask-jwt-extended
 flask-mail
 pytest
+playwright
+pytest-xprocess

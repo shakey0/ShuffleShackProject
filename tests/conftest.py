@@ -1,9 +1,11 @@
-import pytest
+import pytest, sys, py, os
 from flask import Flask
 from ShuffleShackApp import db
 from ShuffleShackApp.config import TestingConfig
 from ShuffleShackApp.models.test_table import RunTable
 from seed_data import init_users, init_properties, init_rooms, init_bookings
+from playwright.sync_api import sync_playwright
+from xprocess import ProcessStarter
 
 @pytest.fixture(scope='function')
 def test_app():
@@ -34,3 +36,26 @@ def seed_test_database(test_app):
         init_properties(db)
         init_rooms(db)
         init_bookings(db)
+
+@pytest.fixture
+def page():
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        page = browser.new_page()
+        yield page
+        browser.close()
+
+@pytest.fixture(scope='session')
+def flask_server(xprocess):
+    python_executable = sys.executable
+    app_file = py.path.local(__file__).dirpath("../run.py").realpath()
+    class Starter(ProcessStarter):
+        pattern = "Running on http://127.0.0.1:5000"
+        env = {"PORT": str(5000), "FLASK_ENV": "testing", **os.environ}
+        args = [python_executable, app_file]
+
+    xprocess.ensure('flask_app', Starter)
+
+    yield f"http://localhost:5000/"
+
+    xprocess.getinfo('flask_app').terminate()

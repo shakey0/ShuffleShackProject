@@ -11,7 +11,7 @@ class DevelopmentConfig(Config):
 class TestingConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_TEST_DATABASE_URI', 'postgresql://localhost/shuffle_shack_data_test')
-    WTF_CSRF_ENABLED = False
+    WTF_CSRF_ENABLED = True
 
 class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI', 'postgresql://localhost/shuffle_shack_data_prod')

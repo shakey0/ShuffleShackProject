@@ -83,8 +83,8 @@
         <div class="main-menu-box-auth pop-up-box" id="main-menu-box">
             <button data-cancel-button class="cancel-button">&times;</button>
             <div class="menu-button-container">
-                <button class="profile-button">Profile</button>
                 <button class="bookings-button">Your Bookings</button>
+                <button class="profile-button">Your Info</button>
                 <button class="hosting-button">Your Hosting</button>
                 <form class="logout-form" action="/logout" method="POST">
                     {{ logout_form.csrf_token(id='csrf_token_logout') }}
