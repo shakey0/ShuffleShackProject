@@ -23,11 +23,11 @@ def create_app():
         return User.query.get(int(user_id))
 
     from .views.main import main as main_blueprint
-    # from .views.auth import auth as auth_blueprint
+    from .views.auth import auth as auth_blueprint
     # from .views.api import api as api_blueprint
 
     app.register_blueprint(main_blueprint)
-    # app.register_blueprint(auth_blueprint)
+    app.register_blueprint(auth_blueprint)
     # app.register_blueprint(api_blueprint)
 
     return app
