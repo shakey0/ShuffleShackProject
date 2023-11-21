@@ -46,21 +46,21 @@ def test_booking_creation(test_app, test_client, seed_test_database):
         }
     }
     assert booking.property_info == {
-        "country": "Sampleland",
-        "city": "Example City",
-        "address_1": "123 Example Lane",
-        "address_2": "Sample District",
-        "address_3": "Example County",
-        "postcode": "EX4 6PL",
-        "phone_number": "0123456789",
-        "name": "Sample Property",
+        "country": "Austria",
+        "city": "Innsbruck",
+        "address_1": "98 Haller Strasse",
+        "address_2": "Hötting",
+        "address_3": "",
+        "postcode": "6022",
+        "phone_number": "591 914 5518",
+        "name": "Eine gemütliche Haus",
         "check_in_from": 14,
-        "check_in_to": 22,
+        "check_in_to": 25,
         "check_out": 11,
-        "cancel_period": 48,
-        "min_age": 8,
-        "host_pets": {},
-        "guest_pets": {"Dog": 1},
+        "cancel_period": 72,
+        "min_age": 16,
+        "host_pets": {'Cat': 1, 'Dog': 2},
+        "guest_pets": {"Dog": True},
         "overall_review": 40
     }
     assert booking.status == 'reviewed'
@@ -82,9 +82,9 @@ def test_booking_creation(test_app, test_client, seed_test_database):
     assert not any(inclusion['total_price'] == 0 for inclusion in booking.inclusions['Massage'])
     assert not any(guest['age'] < 18 for guest in booking.guest_info.values())
     assert all(bed == 'King' for bed in booking.room_info['2']['beds'])
-    assert booking.property_info['country'] == 'Sampleland'
+    assert booking.property_info['country'] == 'Austria'
     assert 'guest_pets' in booking.property_info
-    assert not booking.property_info['host_pets']
+    assert booking.property_info['host_pets']
     assert booking.property_info['guest_pets']
     assert [room.id for room in booking.rooms] == [2, 3]
 

@@ -14,11 +14,22 @@
                 <p><i>{{ property.city }}, {{ property.country }}</i></p>
             </div>
             <div class="property-description">
-                <p>{{ property.description }}</p>
+                <p>{{ description_limiter(property.description) }}</p>
             </div>
             <div class="from-price">
                 <p>From £{{ format_price(room.price) }} per night</p>
             </div>
+            {% if in_search %}
+            <div class="room_info"><i>
+                {% if property.total_space == 'Exact' %}
+                    <p>{{ room.name }} with {% for bed in divide_capacity_for_bed_type(room.beds.items()) %}{{ bed[1] }} {{ bed[0] }} bed(s){% if not loop.last %}, {% endif %}{% endfor %}</p>
+                {% elif property.total_space == 'Extra' %}
+                    <p>{{ room.name }} with {% for bed in divide_capacity_for_bed_type(room.beds.items()) %}{{ bed[1] }} {{ bed[0] }} bed(s){% if not loop.last %}, {% endif %}{% endfor %}</p>
+                {% elif property.total_space == 'More' %}
+                    <p>{{ room.name }} with {% for bed in divide_capacity_for_bed_type(room.beds.items()) %}{{ bed[1] }} {{ bed[0] }} bed(s){% if not loop.last %}, {% endif %}{% endfor %}, and extra space available (see 'Extras' for the room)</p>
+                {% endif %}</i>
+            </div>
+            {% endif %}
         </div>
     </div>
     {% endfor %}

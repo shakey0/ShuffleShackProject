@@ -3,32 +3,32 @@ from ShuffleShackApp.models.property import Property
 
 def test_property_creation(test_app, test_client, seed_test_database):
 
-    property = Property.query.filter_by(name='Test Property').first()
+    property = Property.query.filter_by(name='Innsbruck City Stay').first()
 
     assert property is not None
     assert property.id == 1
     assert property.display_image_url == 'test_property_image.webp'
-    assert property.country == 'Testland'
-    assert property.city == 'Testville'
-    assert property.address_1 == '1 Test Street'
-    assert property.address_2 == 'Test District'
-    assert property.address_3 == 'Test County'
-    assert property.postcode == 'TE5 7PC'
-    assert property.phone_number == '0987654321'
-    assert property.name == 'Test Property'
-    assert property.type == 'House'
-    assert property.description == 'A test property'
-    assert property.check_in_from == 12
-    assert property.check_in_to == 24
-    assert property.check_out == 10
-    assert property.cancel_period == 24
+    assert property.country == 'Austria'
+    assert property.city == 'Innsbruck'
+    assert property.address_1 == '5 Feldstrasse'
+    assert property.address_2 == 'Innenstadt'
+    assert property.address_3 == ''
+    assert property.postcode == '6020'
+    assert property.phone_number == '591 123 4567'
+    assert property.name == 'Innsbruck City Stay'
+    assert property.type == 'Apartment'
+    assert property.description == 'A cozy apartment in the heart of Innsbruck'
+    assert property.check_in_from == 15
+    assert property.check_in_to == 0
+    assert property.check_out == 11
+    assert property.cancel_period == 48
     assert property.meals == {'Breakfast': {'Croissant & Coffee': 0}}
     assert property.min_age == 0
     assert property.min_stay == 1
     assert property.host_pets == {'Cat': 1}
     assert property.guest_pets == {}
     assert property.pets_notice == 'Guests cannot bring pets. Our cat hates other animals.'
-    assert property.extras == {'Evening tour of Verona': 800}
+    assert property.extras == {'Tour vor die Stadt': 800}
     assert property.review_data == {
         'average_rating': 45,
         'number_of_reviews': 10,
@@ -46,5 +46,5 @@ def test_property_creation(test_app, test_client, seed_test_database):
     assert not property.guest_pets
     assert property.extras
 
-    assert property.__eq__(Property.query.filter_by(name='Test Property').first()) is True
-    assert property.__repr__() == '<Property 1 Test Property>'
+    assert property.__eq__(Property.query.filter_by(name='Innsbruck City Stay').first()) is True
+    assert property.__repr__() == '<Property 1 Innsbruck City Stay>'
