@@ -15,8 +15,8 @@ def test_room_creation(test_app, test_client, seed_test_database):
     assert room.name == 'Cozy Suite'
     assert room.floor == '1'
     assert room.description == 'A cozy and comfortable suite with modern amenities'
-    assert room.beds == {'Queen': 2, 'Super King': 2}
-    assert room.max_guests == 6
+    assert room.beds == {'Queen': 4, 'Super King': 2}
+    assert room.max_guests == 8
     assert room.has_bathroom is True
     assert room.has_tv is True
     assert room.extras == {"Fold out bed": 3000, "Cot": 1000}

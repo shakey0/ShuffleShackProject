@@ -21,8 +21,10 @@ def description_limiter(description):
 
 
 def room_name_checker(room_name):
-    if 'room' in room_name.lower():
-        return room_name
+    valid_rooms = ['room', 'suite', 'villa', 'apartment', 'cabin', 'house', 'flat', 'studio', 'chalet', 'cottage', 'bungalow', 'penthouse', 'condo', 'guesthouse', 'tent', 'camping spot', 'treehouse', 'houseboat', 'barn', 'hut', 'dome house', 'lighthouse', 'windmill']
+    for room in valid_rooms:
+        if room in room_name.lower():
+            return room_name
     return room_name + ' Room'
 
 

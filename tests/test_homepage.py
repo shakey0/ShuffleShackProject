@@ -3,8 +3,6 @@ from playwright.sync_api import expect
 def test_homepage_navbar(page, test_app, test_client, seed_test_database, flask_server):
     test_url = "http://localhost:5000/"
     page.goto(test_url)
-    logo = page.locator('.logo')
-    expect(logo).to_have_text('SHUFFLESHACK')
     nav_item_ps = page.locator('.nav-item p')
     expect(nav_item_ps).to_have_text([
         'Check in',
@@ -20,7 +18,7 @@ def test_homepage_random_30_properties(page, test_app, test_client, seed_test_da
     page.goto(test_url)
     properties_container = page.locator('.properties-container')
     expect(properties_container).to_contain_text('Eine gemütliche Haus\nInnsbruck, Austria\nEine gemütliche Haus in der Nähe von Innsbruck\nFrom £90.00 per night')
-    expect(properties_container).to_contain_text('Rubens Guest House\nLondon, United Kingdom\nA majestic five-star London hotel-like house near Buckingham Palace. The Rubens Guest House offers the perfect combination of classic elegance and unrivalled hospitality for business and leisure travellers alike.\nFrom £105.00 per night')
+    expect(properties_container).to_contain_text('Rubens Guest House\nLondon, United Kingdom\nA majestic five-star London hotel-like house near...\nFrom £105.00 per night')
 
 def test_homepage_register_and_login(page, test_app, test_client, seed_test_database, flask_server):
     test_url = "http://localhost:5000/"

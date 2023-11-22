@@ -319,7 +319,7 @@ def init_rooms(db):
             name='Attic Super King',
             floor='Attic',
             description='A spacious room with a view of the old town',
-            beds={'King': 2},
+            beds={'Super King': 2},
             max_guests=5,
             has_bathroom=True,
             has_tv=True,
