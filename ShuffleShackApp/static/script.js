@@ -138,6 +138,57 @@ document.addEventListener('DOMContentLoaded', function() {
     passwordInput.addEventListener('input', validatePassword);
     confirmPasswordInput.addEventListener('input', validateConfirmPassword);
 
+
+    var checkInField = document.getElementById("check_in");
+    var checkOutField = document.getElementById("check_out");
+
+    // Update check_out minimum date when check_in changes
+    checkInField.addEventListener("change", function() {
+        var checkInDate = new Date(checkInField.value);
+        var minCheckOutDate = new Date(checkInDate);
+        minCheckOutDate.setDate(minCheckOutDate.getDate() + 1); // Ensures check_out is at least the day after check_in
+        checkOutField.setAttribute("min", minCheckOutDate.toISOString().split("T")[0]);
+        checkOutField.setCustomValidity("You can't check out before you check in!");
+
+        var checkOutDate = new Date(checkOutField.value);
+        if (checkOutField.value && checkOutDate <= checkInDate) {
+            var customMessage = "You can't check out before you check in!";
+            checkOutField.setCustomValidity(customMessage);
+        } else {
+            checkOutField.setCustomValidity("");
+        }    
+    });
+
+    // Validate the check_out date on change
+    checkOutField.addEventListener("input", function() {
+        var checkInDate = new Date(checkInField.value);
+        var checkOutDate = new Date(checkOutField.value);
+        if (checkOutField.value && checkOutDate <= checkInDate) {
+            var customMessage = "You can't check out before you check in!";
+            checkOutField.setCustomValidity(customMessage);
+        } else {
+            checkOutField.setCustomValidity("");
+        }
+    });
+
+
+    var guestsInput = document.getElementById('guests'); // Ensure this is the correct ID of your guests input field.
+
+    guestsInput.oninvalid = function(event) {
+        if (event.target.validity.rangeOverflow) {
+            event.target.setCustomValidity('Max guests per booking is 12.');
+        } else if (event.target.validity.rangeUnderflow) {
+            event.target.setCustomValidity('You can\'t book a room with no guests!');
+        } else {
+            event.target.setCustomValidity('');
+        }
+    };
+
+    guestsInput.oninput = function(event) {
+        // Clear custom validity messages when the user corrects the input
+        event.target.setCustomValidity('');
+    };
+
 });
 
 

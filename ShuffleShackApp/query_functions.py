@@ -43,6 +43,7 @@ def get_popular_properties():
 BookingAlias = aliased(Booking)
 RoomBookingAlias = aliased(rooms_bookings)
 
+
 def get_search_properties(check_in, check_out, city, number_of_guests):
     
     query = (

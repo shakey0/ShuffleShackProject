@@ -1,10 +1,11 @@
-from flask import Blueprint, render_template, request
-from ShuffleShackApp.big_queries import get_popular_properties, get_search_properties
+from flask import Blueprint, render_template, request, session
+from ShuffleShackApp.query_functions import get_popular_properties, get_search_properties
 from ShuffleShackApp.forms.auth_forms import LoginForm, RegisterForm, LogoutForm
 from ShuffleShackApp.forms.search_forms import SearchForm
 from ShuffleShackApp.utils import format_price, first_three_characters, description_limiter, \
 room_name_checker, format_beds
 from flask_login import current_user
+from datetime import datetime, date, timedelta
 
 
 main = Blueprint('main', __name__)
@@ -21,6 +22,7 @@ def index():
         check_out = search_query['check_out']
         city = search_query['city']
         number_of_guests = int(search_query['guests'])
+        session['search_query'] = [check_in, check_out, city, number_of_guests]
         
         properties_and_rooms = get_search_properties(check_in, check_out, city, number_of_guests)
         in_search = True
@@ -28,8 +30,24 @@ def index():
         print('NO SEARCH QUERY FOUND')
         properties_and_rooms = get_popular_properties()
         in_search = False
+
+    if 'search_query' in session:
+        search_query_data = session['search_query']
+        previous_check_in = datetime.strptime(search_query_data[0], '%Y-%m-%d').date()
+        previous_check_out = datetime.strptime(search_query_data[1], '%Y-%m-%d').date()
+        previous_city = search_query_data[2]
+        previous_guests = search_query_data[3]
+        search_form = SearchForm(check_in=previous_check_in, check_out=previous_check_out, city=previous_city, guests=previous_guests)
+        min_check_out_date = previous_check_in + timedelta(days=1)
+    else:
+        search_form = SearchForm()
+        min_check_out_date = date.today() + timedelta(days=1)
+
+    latest_check_in = date.today() + timedelta(days=299)
+    search_form.check_in.render_kw = {'min': date.today().strftime('%Y-%m-%d'), 'max': latest_check_in.strftime('%Y-%m-%d')}
     
-    search_form = SearchForm()
+    latest_check_out = date.today() + timedelta(days=300)
+    search_form.check_out.render_kw = {'min': min_check_out_date.strftime('%Y-%m-%d'), 'max': latest_check_out.strftime('%Y-%m-%d')}
 
     login_form = LoginForm()
 

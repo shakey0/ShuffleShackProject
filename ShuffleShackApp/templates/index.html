@@ -19,11 +19,11 @@
             <div style="margin-top: 4px; border-top: 1px solid #000000; height: 66px">
                 {% if in_search %}<i>
                     {% if room.total_space == 'Exact' %}
-                        <p style="padding-top: 4px; font-size: 0.9em;">{{ room_name_checker(room.name) }} with {% for bed in format_beds(room.beds.items()) %}{{ bed }}{% if not loop.last %}, {% endif %}{% endfor %}</p>
+                        <p style="padding-top: 4px; font-size: 0.9em;">{{ room_name_checker(room.name) }} with {% for bed in format_beds(room.beds.items()) %}{{ bed }}{% if not loop.last %}, {% endif %}{% endfor %} - {% if room.has_bathroom %}Private{% else %}Shared{% endif %} bathroom</p>
                     {% elif room.total_space == 'More' %}
-                        <p style="padding-top: 4px; font-size: 0.9em;">{{ room_name_checker(room.name) }} with {% for bed in format_beds(room.beds.items()) %}{{ bed }}{% if not loop.last %}, {% endif %}{% endfor %}</p>
+                        <p style="padding-top: 4px; font-size: 0.9em;">{{ room_name_checker(room.name) }} with {% for bed in format_beds(room.beds.items()) %}{{ bed }}{% if not loop.last %}, {% endif %}{% endfor %} - {% if room.has_bathroom %}Private{% else %}Shared{% endif %} bathroom</p>
                     {% elif room.total_space == 'Less' %}
-                        <p style="padding-top: 4px; font-size: 0.9em;">{{ room_name_checker(room.name) }} with {% for bed in format_beds(room.beds.items()) %}{{ bed }}{% if not loop.last %}, {% endif %}{% endfor %}, and extra space available (see 'Extras' for the room)</p>
+                        <p style="padding-top: 4px; font-size: 0.9em;">{{ room_name_checker(room.name) }} with {% for bed in format_beds(room.beds.items()) %}{{ bed }}{% if not loop.last %}, {% endif %}{% endfor %}, and extra beds/space available - {% if room.has_bathroom %}Private{% else %}Shared{% endif %} bathroom</p>
                     {% endif %}</i>
                 {% endif %}
                 <p style="padding-top: 2px;"><b>From £{{ format_price(room.price) }} per night</b></p>
