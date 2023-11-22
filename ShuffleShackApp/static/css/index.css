@@ -37,7 +37,7 @@
     object-position: center; /* Centers the image to ensure even cropping */
 }
 
-@media (max-width: 480px) {
+@media (max-width: 572px) {
 
     .properties-container {
         margin-top: 220px;
