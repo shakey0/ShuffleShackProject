@@ -23,6 +23,11 @@
     justify-content: center; /* Centers the image horizontally */
     align-items: center;     /* Centers the image vertically */
     cursor: pointer;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.property-image:hover {
+    opacity: 0.8;
 }
 
 .property-image img {
