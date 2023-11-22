@@ -32,21 +32,6 @@
     object-position: center; /* Centers the image to ensure even cropping */
 }
 
-.property-name, .property-location, .property-description {
-    margin-top: 2px;
-}
-
-.property-name {
-    cursor: pointer;
-}
-
-.from-price {
-    margin-top: 4px;
-    padding-top: 2px;
-    border-top: 1px solid #000000;
-    font-weight: bold;
-}
-
 @media (max-width: 480px) {
 
     .properties-container {

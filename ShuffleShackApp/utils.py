@@ -10,12 +10,20 @@ def first_three_characters(user_name):
 
 
 def description_limiter(description):
-    if len(description) <= 45:
+    if len(description) <= 50:
         return description
-    description = description[:45]
+    description = description[:50]
     after_last_space = description.rfind(' ')
     description = description[:after_last_space]
+    if description[-1] == ',' or description[-1] == '.':
+        description = description[:-1]
     return description + '...'
+
+
+def room_name_checker(room_name):
+    if 'room' in room_name.lower():
+        return room_name
+    return room_name + ' Room'
 
 
 bed_capacity = {
@@ -29,10 +37,16 @@ bed_capacity = {
     'Floor Space': 1,
 }
 
-def divide_capacity_for_bed_type(bed_tuple_dict_items):
-    bed_tuple_data = list(bed_tuple_dict_items)[0]
-    print(bed_tuple_data)  # FROM HERE !!!!!!!!!!!!!!!!!!!!!!
-    return (bed_tuple_data[0], bed_capacity[bed_tuple_data[0]] / bed_tuple_data[1])
+def format_beds(bed_tuple_dict_items):
+    formatted_bed_strings = []
+    for bed_tuple_data in bed_tuple_dict_items:
+        bed_type = bed_tuple_data[0]
+        number_of_beds_for_bed_type = bed_tuple_data[1]// bed_capacity[bed_type]
+        if number_of_beds_for_bed_type == 1:
+            formatted_bed_strings.append(f"{number_of_beds_for_bed_type} {bed_type} bed")
+        else:
+            formatted_bed_strings.append(f"{number_of_beds_for_bed_type} {bed_type} beds")
+    return formatted_bed_strings
 
 
 def get_dates(start_date, end_date):
