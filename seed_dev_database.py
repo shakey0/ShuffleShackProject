@@ -1,7 +1,8 @@
 from flask import Flask
 from ShuffleShackApp.extensions import db
 from ShuffleShackApp.config import DevelopmentConfig
-from seed_data import init_users, init_properties, init_rooms, init_bookings, init_random_data
+from seed_data import init_users, init_properties, init_rooms, init_bookings
+from seed_data_random import init_random_data
 
 def seed_dev_database():
     app = Flask(__name__)
@@ -26,8 +27,5 @@ if seed_with_random_data == 'y':
     number_of_rooms = input('How many rooms? ')
     # number_of_bookings = input('How many bookings? ')
     result = init_random_data(db, int(number_of_users), int(number_of_properties), int(number_of_rooms))
-    if result:
-        print('Database seeded with random data.')
-    else:
-        for error in result:
-            print(error)
+    for result in result:
+        print(result)
