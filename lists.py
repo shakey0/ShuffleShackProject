@@ -248,11 +248,10 @@ common_adjectives_for_people = ['adaptable', 'adventurous', 'aloof', 'ambitious'
                                 'trustworthy', 'unfeeling', 'ungrateful', 'unhelpful', 'unimaginative', 'unobservant',
                                 'unreliable', 'unsympathetic', 'untalented', 'vain', 'wise']
 
-common_email_domains = [ "gmail.com", "yahoo.com", "outlook.com", "hotmail.com", "aol.com", "icloud.com", "protonmail.com",
+common_email_domains = ["gmail.com", "yahoo.com", "outlook.com", "hotmail.com", "aol.com", "icloud.com", "protonmail.com",
                         "yandex.com", "zoho.com", "mail.com", "gmx.com", "inbox.com", "mail.ru", "qq.com", "163.com",
                         "126.com", "sina.com", "outlook.jp", "naver.com", "daum.net", "naver.jp", "rocketmail.com",
                         "live.com", "me.com", "fastmail.com", "disposable.com", "apple.com", "msn.com", "earthlink.net"]
-
 
 adjectives_for_places = ['ancient', 'beautiful', 'bohemian', 'breathtaking', 'buzzing', 'captivating', 'charming',
                         'coastal', 'colorful', 'compact', 'cosmopolitan', 'cozy', 'crowded', 'cultural', 'deserted',
@@ -273,7 +272,6 @@ adjectives_for_places = ['ancient', 'beautiful', 'bohemian', 'breathtaking', 'bu
 
 # unique_names.sort()
 
-# # Print the final list of unique nationalities
 # print([name.lower() for name in unique_names])
 # print()
 # print(repeated_names)

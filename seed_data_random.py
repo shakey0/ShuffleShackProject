@@ -12,10 +12,13 @@ from lists import common_baby_names, common_last_names, common_adjectives_for_pe
 import random
 
 
+things_to_overlook = ['the city', 'the lake', 'the river', 'the mountains', 'the hills', 'the forest', 'the sea', 'the ocean', 'the beach', 'the countryside', 'the fields', 'the central park', 'the old town', 'the new town', 'the harbour', 'the docks', 'the port', 'the city centre', 'the city lake']
+
+
 def create_random_users(number_of_users):
     users = []
-    used_user_names = []
-    used_emails = []
+    used_user_names = set()
+    used_emails = set()
     for _ in range(number_of_users):
 
         if len(users) % 5000 == 0 and len(users) > 0:
@@ -28,7 +31,7 @@ def create_random_users(number_of_users):
             error_breaker += 1
             random_user_name = f"{random.choice(common_adjectives_for_people)}{random.choice(['', '_', '-'])}{random_first_name.lower()}{random.choice(['', '_', '-'])}{random_last_name[0].lower()}{random.choice(['', '_', '-'])}{random.randint(1, 1000)}"
             if random_user_name not in used_user_names:
-                used_user_names.append(random_user_name)
+                used_user_names.add(random_user_name)
                 break
         if error_breaker == 100:
             print('ERROR: Could not create unique username')
@@ -38,7 +41,7 @@ def create_random_users(number_of_users):
             error_breaker += 1
             random_email = f"{random_first_name.lower()}{random.choice(['', '_', '-'])}{random.choice(string.ascii_lowercase)}{random.choice(['', '_', '-'])}{random_last_name.lower()}{random.choice(['', '_', '-'])}{random.randint(1, 1000)}@{random.choice(common_email_domains)}"
             if random_email not in used_emails:
-                used_emails.append(random_email)
+                used_emails.add(random_email)
                 break
         if error_breaker == 100:
             print('ERROR: Could not create unique email')
@@ -89,7 +92,6 @@ def create_random_properties(number_of_properties, random_users):
     extra_prices = [400, 500, 600, 700, 800, 900, 1000, 1200, 1500, 2000, 3000, 4000]
 
     location_sayings = ['in the heart of ', 'in the centre of ', 'in the middle of ', 'in the outskirts of ', 'in the suburbs of ', 'in the hills of ', 'on the coast of ', 'on the river of ', 'on the lake of ', 'on the edge of ']
-    things_to_overlook = ['the city', 'the lake', 'the river', 'the mountains', 'the hills', 'the forest', 'the sea', 'the ocean', 'the beach', 'the countryside', 'the fields', 'the central park', 'the old town', 'the new town', 'the harbour', 'the docks', 'the port', 'the city centre', 'the city lake']
 
     min_ages = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 6, 8, 10, 12, 14, 16, 16, 18, 18]
 
@@ -207,7 +209,7 @@ def create_random_properties(number_of_properties, random_users):
             country=country,
             city=city,
             address_1 = f"{random.randint(1, 999)} {city} {random.choice(street_words)}",
-            address_2 = f"{random.choice(['', random.choice(['Central' + city, 'City Centre', 'Outer' + city])])}",
+            address_2 = f"{random.choice(['', random.choice(['Central ' + city, 'City Centre', 'Outer ' + city])])}",
             address_3 = "",
             postcode = ''.join(random.choices(string.ascii_uppercase, k=2)) + ''.join(random.choices(string.digits, k=2)) + ' ' + ''.join(random.choices(string.digits, k=1)) + ''.join(random.choices(string.ascii_uppercase, k=2)),
             phone_number=''.join(random.choices(string.digits, k=10)),
@@ -234,45 +236,138 @@ def create_random_properties(number_of_properties, random_users):
     return properties
 
 
-import random
-from datetime import date
-
 def create_random_rooms(number_of_rooms, random_properties):
-    rooms = []
-    floors = ['Ground', '1', '2', '3', 'Attic']
+
+    common_floors = ['Ground', '1', '2', '3', 'Attic']
+    more_floors = ['Ground', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', 'Garden', 'Yard', 'Field']
+    
     bed_types = ['Single', 'Queen', 'Double', 'King', 'Super King']
+    unusual_bed_types = ['Bunk', 'Triple Bunk', 'Floor Space']
     bed_capacity = {'Single': 1, 'Queen': 2, 'Double': 2, 'King': 2, 'Super King': 2,
                     'Bunk': 2, 'Triple Bunk': 3, 'Floor Space': 1}
+    
+    room_names = ['', '', 'Room', 'Room', 'Room', 'Room', 'Room', 'Room', 'Room', 'Room', 'Suite', 'Suite', 'Suite', 'Suite', 'Villa', 'Apartment', 'Cabin', 'House', 'Flat', 'Studio', 'Chalet', 'Cottage', 'Bungalow']
+    unusual_room_names = ['Room', 'Suite', 'Villa', 'Apartment', 'Cabin', 'House', 'Flat', 'Studio', 'Chalet', 'Cottage', 'Bungalow', 'Penthouse', 'Condo', 'Guesthouse', 'Tent', 'Camping Spot', 'Treehouse', 'Houseboat', 'Barn', 'Hut', 'Dome House', 'Lighthouse', 'Windmill']
+    room_name_adjectives = ['Luxury ', 'Comfortable ', 'Cosy ', 'Spacious ', 'Modern ', 'Rustic ', 'Traditional ', 'Quaint ', 'Charming ', 'Stylish ', 'Elegant ', 'Gorgeous ', 'Lovely ', 'Delightful ', 'Enchanting ', 'Exquisite ', 'Superb ', 'Magnificent ', 'Impressive ', 'Grand ', 'Majestic ', 'Prestigious ']
+    view_adjectives = ['a wonderful', 'a fantastic', 'a gorgeous', 'a beautiful', 'a stunning', 'a breathtaking', 'an amazing', 'a spectacular', 'a lovely', 'a delightful', 'an enchanting', 'an exquisite', 'a superb', 'a magnificent', 'an impressive', 'a grand', 'a majestic', 'a prestigious']
 
+    available_days_6_combos = ['Mon,Tue,Wed,Thu,Fri,Sat', 'Mon,Tue,Wed,Thu,Fri,Sun', 'Mon,Tue,Wed,Thu,Sat,Sun', 'Mon,Tue,Wed,Fri,Sat,Sun', 'Mon,Tue,Thu,Fri,Sat,Sun', 'Mon,Wed,Thu,Fri,Sat,Sun', 'Tue,Wed,Thu,Fri,Sat,Sun']
+    available_days_6_weekends = ['Mon,Tue,Wed,Thu,Fri,Sat', 'Tue,Wed,Thu,Fri,Sat,Sun', 'Wed,Thu,Fri,Sat,Sun,Mon', 'Thu,Fri,Sat,Sun,Mon,Tue', 'Fri,Sat,Sun,Mon,Tue,Wed']
+    available_days_5_combos = ['Mon,Tue,Wed,Thu,Fri', 'Mon,Tue,Wed,Thu,Sat', 'Mon,Tue,Wed,Thu,Sun', 'Mon,Tue,Wed,Fri,Sat', 'Mon,Tue,Wed,Fri,Sun', 'Mon,Tue,Thu,Fri,Sat', 'Mon,Tue,Thu,Fri,Sun', 'Mon,Tue,Fri,Sat,Sun', 'Mon,Wed,Thu,Fri,Sat', 'Mon,Wed,Thu,Fri,Sun', 'Mon,Wed,Thu,Sat,Sun', 'Mon,Wed,Fri,Sat,Sun', 'Mon,Thu,Fri,Sat,Sun', 'Tue,Wed,Thu,Fri,Sat', 'Tue,Wed,Thu,Fri,Sun', 'Tue,Wed,Thu,Sat,Sun', 'Tue,Wed,Fri,Sat,Sun', 'Tue,Thu,Fri,Sat,Sun', 'Wed,Thu,Fri,Sat,Sun']
+    available_days_5_weekends = ['Tue,Wed,Thu,Fri,Sat', 'Wed,Thu,Fri,Sat,Sun', 'Thu,Fri,Sat,Sun,Mon', 'Fri,Sat,Sun,Mon,Tue']
+    available_days_4_combos = ['Mon,Tue,Wed,Thu', 'Mon,Tue,Wed,Fri', 'Mon,Tue,Wed,Sat', 'Mon,Tue,Wed,Sun', 'Mon,Tue,Thu,Fri', 'Mon,Tue,Thu,Sat', 'Mon,Tue,Thu,Sun', 'Mon,Tue,Fri,Sat', 'Mon,Tue,Fri,Sun', 'Mon,Tue,Sat,Sun', 'Mon,Wed,Thu,Fri', 'Mon,Wed,Thu,Sat', 'Mon,Wed,Thu,Sun', 'Mon,Wed,Fri,Sat', 'Mon,Wed,Fri,Sun', 'Mon,Wed,Sat,Sun', 'Mon,Thu,Fri,Sat', 'Mon,Thu,Fri,Sun', 'Mon,Thu,Sat,Sun', 'Mon,Fri,Sat,Sun', 'Tue,Wed,Thu,Fri', 'Tue,Wed,Thu,Sat', 'Tue,Wed,Thu,Sun', 'Tue,Wed,Fri,Sat', 'Tue,Wed,Fri,Sun', 'Tue,Wed,Sat,Sun', 'Tue,Thu,Fri,Sat', 'Tue,Thu,Fri,Sun', 'Tue,Thu,Sat,Sun', 'Tue,Fri,Sat,Sun', 'Wed,Thu,Fri,Sat', 'Wed,Thu,Fri,Sun', 'Wed,Thu,Sat,Sun', 'Wed,Fri,Sat,Sun', 'Thu,Fri,Sat,Sun']
+    available_days_4_weekends = ['Thu,Fri,Sat,Sun', 'Fri,Sat,Sun,Mon']
+    available_days_3_combos = ['Mon,Tue,Wed', 'Mon,Tue,Thu', 'Mon,Tue,Fri', 'Mon,Tue,Sat', 'Mon,Tue,Sun', 'Mon,Wed,Thu', 'Mon,Wed,Fri', 'Mon,Wed,Sat', 'Mon,Wed,Sun', 'Mon,Thu,Fri', 'Mon,Thu,Sat', 'Mon,Thu,Sun', 'Mon,Fri,Sat', 'Mon,Fri,Sun', 'Mon,Sat,Sun', 'Tue,Wed,Thu', 'Tue,Wed,Fri', 'Tue,Wed,Sat', 'Tue,Wed,Sun', 'Tue,Thu,Fri', 'Tue,Thu,Sat', 'Tue,Thu,Sun', 'Tue,Fri,Sat', 'Tue,Fri,Sun', 'Tue,Sat,Sun', 'Wed,Thu,Fri', 'Wed,Thu,Sat', 'Wed,Thu,Sun', 'Wed,Fri,Sat', 'Wed,Fri,Sun', 'Wed,Sat,Sun', 'Thu,Fri,Sat', 'Thu,Fri,Sun', 'Thu,Sat,Sun', 'Fri,Sat,Sun']
+    available_days_3_weekends = ['Thu,Fri,Sat','Fri,Sat,Sun']
+
+    extra_beds = ['Fold out bed', 'Extra bed']
+    sleeping_bags = ['Sleeping bag', 'Sleeping bag for sofa', 'Sleeping bag and mat']
+    extra_bed_prices = [0, 500, 1000, 1000, 1200, 1200, 1500, 1500, 2000, 3000]
+    sleeping_bag_prices = [0, 0, 400, 500, 500, 600, 600, 700, 700, 800, 800, 900, 900, 1000, 1000, 1200, 1500, 2000]
+
+    rooms = []
     for _ in range(number_of_rooms):
 
         if len(rooms) % 5000 == 0 and len(rooms) > 0:
             print(f"{len(rooms)} rooms have been generated so far.")
 
-        floor = random.choice(floors)
-        bed_type = random.choice(bed_types)
-        number_of_beds = 1 if bed_type == 'Single' else 2
-        max_guests = bed_capacity[bed_type] * number_of_beds + random.randint(0, 4)
-        price = random.randint(5000, 15000)
-        premium = random.randint(0, 2000)
-        room_name = ''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase, k=6))
-        description = f"A {bed_type.lower()} bed room on the {floor} floor."
-        property_id = random.choice(range(1, len(random_properties) + 1))
+        generated_beds = {}
+
+        number_of_bed_types = random.randint(0, 4)
+        if number_of_bed_types != 2:
+            number_of_bed_types = 1
+        for _ in range(number_of_bed_types):
+            bed_types_list = random.randint(0, 19)
+            if bed_types_list == 19:
+                bed_type = random.choice(unusual_bed_types)
+            else:
+                bed_type = random.choice(bed_types)
+            number_of_beds_for_bed_type = random.choice([1, 1, 1, 1, 1, 1, 1, 1, 2])
+            if bed_type in unusual_bed_types or bed_type == 'Single':
+                number_of_beds_for_bed_type = random.choice([1, 1, 2, 2, 2, 2, 3, 4])
+            generated_beds[bed_type] = number_of_beds_for_bed_type * bed_capacity[bed_type]
+
+        if 'Super King' in generated_beds and sum(generated_beds.values()) <= 3:
+            room_name_type = 'Super King '
+        elif 'King' in generated_beds and sum(generated_beds.values()) <= 3:
+            room_name_type = 'King '
+        elif 'Queen' in generated_beds and sum(generated_beds.values()) <= 3:
+            room_name_type = 'Queen '
+        elif 'Double' in generated_beds and sum(generated_beds.values()) <= 3:
+            room_name_type = 'Double '
+        elif ('Single' in generated_beds or 'Bunk' in generated_beds) and sum(generated_beds.values()) == 4:
+            room_name_type = 'Quad '
+        elif ('Single' in generated_beds or 'Triple Bunk' in generated_beds) and sum(generated_beds.values()) == 3:
+            room_name_type = 'Triple '
+        elif ('Single' in generated_beds or 'Bunk' in generated_beds) and sum(generated_beds.values()) == 2:
+            room_name_type = 'Twin '
+        elif 'Single' in generated_beds and sum(generated_beds.values()) == 1:
+            room_name_type = 'Single '
+        elif sum(generated_beds.values()) > 3:
+            room_name_type = 'Family '
+        else:
+            room_name_type = ''
+
+        if sum(generated_beds.values()) >= 4:
+            has_bathroom = random.choice([True, True, True, True, True, True, True, True, True, True, True, True, False])
+        else:
+            has_bathroom = random.choice([True, True, False])
+
+        available_days_chooser = random.randint(0, 95)
+        if available_days_chooser >= 12:
+            available_days = 'All'
+        elif available_days_chooser >= 9:
+            available_days = random.choice([random.choice(available_days_6_combos), random.choice(available_days_6_weekends)])
+        elif available_days_chooser >= 6:
+            available_days = random.choice([random.choice(available_days_5_combos), random.choice(available_days_5_weekends)])
+        elif available_days_chooser >= 3:
+            available_days = random.choice([random.choice(available_days_4_combos), random.choice(available_days_4_weekends)])
+        else:
+            available_days = random.choice([random.choice(available_days_3_combos), random.choice(available_days_3_weekends)])
+        
+        max_guests = sum(generated_beds.values()) + random.choice([0, 0, 0, 1, 2, 2, 2, 2, 2, 2, 3, 3, 4, 5, 6])
+        
+        generated_extras = {}
+
+        if max_guests > sum(generated_beds.values()):
+            extra_beds_chooser = random.choice([random.choice(extra_beds), random.choice(sleeping_bags)])
+            if not 'bed' in extra_beds_chooser:
+                generated_extras[extra_beds_chooser] = random.choice(sleeping_bag_prices)
+                if random.randint(0, 1) == 1:
+                    extra_beds_chooser = random.choice(extra_beds)
+                    generated_extras[extra_beds_chooser] = random.choice(extra_bed_prices)
+            else:
+                generated_extras[extra_beds_chooser] = random.choice(extra_bed_prices)
+        if random.randint(0, 1) == 1:
+            generated_extras['Cot'] = random.choice([0, 0, 0, 0, 0, 0, 0, 0, 500, 500, 500, 500, 1000, 1000, 1500])
+
+        error_breaker = 0
+        while error_breaker < 100:
+            error_breaker += 1
+            room_name = random.choice(["", random.choice(room_name_adjectives)]) + room_name_type + random.choice(['Room', random.choice(room_names), random.choice(unusual_room_names)])
+            if room_name:
+                break
+        if error_breaker == 100:
+            print('ERROR: Could not create unique username')
+            exit()
+
+        prep = "An" if room_name[0] in ['A', 'E', 'I', 'O', 'U'] else "A"
+        
         room = Room(
             start_date=date(2023, random.randint(5, 12), random.randint(1, 28)),
             end_date=date(2024, random.randint(1, 4), random.randint(1, 28)),
-            available_days='All',
+            available_days=available_days,
             name=room_name,
-            floor=floor,
-            description=description,
-            beds={bed_type: number_of_beds},
+            floor=random.choice([random.choice(common_floors), random.choice(common_floors), random.choice(common_floors), random.choice(common_floors), random.choice(common_floors), random.choice(more_floors)]),
+            description=f"{prep} {room_name.lower()} with {random.choice(view_adjectives)} view of {random.choice(things_to_overlook)}.",
+            beds=generated_beds,
             max_guests=max_guests,
-            has_bathroom=random.choice([True, False]),
-            has_tv=random.choice([True, False]),
-            extras={"Sleeping bag for sofa": random.randint(500, 1000)},
-            price=price,
-            premium=premium,
-            property_id=property_id
+            has_bathroom=has_bathroom,
+            has_tv=random.choice([True, True, True, True, True, False]),
+            extras=generated_extras,
+            price=sum([random.randint(1000, 4000) for _ in range(max_guests)]) + random.randint(0, 4000),
+            premium=random.choice([0, random.randint(1000, 4000)]),
+            property_id=random.choice(range(1, len(random_properties) + 1))
         )
         rooms.append(room)
 
