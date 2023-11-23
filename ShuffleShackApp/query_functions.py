@@ -97,12 +97,13 @@ def get_search_properties(check_in, check_out, city, number_of_guests):
             room.total_space = 'Exact'
             bed_space_properties_and_rooms.append((property, room))
         elif total_bed_spaces > number_of_guests:
-            room.total_space = 'More'
+            room.total_space = f'More{total_bed_spaces - number_of_guests}'
             bed_space_properties_and_rooms.append((property, room))
         elif total_bed_spaces < number_of_guests and room.max_guests >= number_of_guests:
             room.total_space = 'Less'
             bed_space_properties_and_rooms.append((property, room))
     
+    bed_space_properties_and_rooms.sort(key=lambda property_room: property_room[1].price)
     bed_space_properties_and_rooms.sort(key=lambda property_room: property_room[1].total_space)
     favoured_properties_and_rooms = []
     return [(property, room) for property, room in bed_space_properties_and_rooms if property.id not in favoured_properties_and_rooms and not favoured_properties_and_rooms.append(property.id)]

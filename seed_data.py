@@ -904,13 +904,17 @@ def init_bookings(db):
     db.session.commit()
 
 
+from lists import common_baby_names, common_last_names, common_adjectives_for_people, common_email_domains, \
+    nationalities, countries, cities
+import random
+
 def create_random_users(number_of_users):
     users = []
     for _ in range(number_of_users):
-        first_name = ''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase, k=6))
-        last_name = ''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase, k=8))
-        user_name = f"{first_name.lower()}_{last_name.lower()}"
-        email = f"{user_name}@example.com"
+        first_name = random.choice(common_baby_names)
+        last_name = random.choice(common_last_names)
+        user_name = f"{random.choice(common_adjectives_for_people)}_{first_name.lower()}{random.randint(1, 1000)}"
+        email = f"{first_name.lower()}{last_name.lower()}{random.randint(1, 1000)}@{random.choice(common_email_domains)}"
         phone_number = ''.join(random.choices(string.digits, k=10))
 
         user = User(
@@ -921,7 +925,7 @@ def create_random_users(number_of_users):
             phone_number=phone_number, 
             password=b'secret',
             d_o_b=date(random.randint(1950, 2000), random.randint(1, 12), random.randint(1, 28)),
-            nationality='Testland', 
+            nationality=random.choice(nationalities), 
             t_bookings=random.randint(0, 20), 
             no_shows=0, 
             guest_complaints=0, 
@@ -936,22 +940,34 @@ def create_random_properties(number_of_properties, random_users):
     properties = []
     property_types = ['House', 'Apartment', 'Lodge']
     cancel_periods = [24, 48, 72]
+    geographical_words = ['River', 'Central', 'Hillside', 'Seaside', 'Jungle', 'Innercity', 'Old Town']
+    stay_words = ['Stay', 'House', 'Lodge', 'Apartment', 'Home', 'Place', 'Cottage', 'Cabin', 'Retreat', 'Residence', 'Mansion', 'Manor']
+    street_words = ['Street', 'Road', 'Avenue', 'Lane', 'Drive', 'Place', 'Square', 'Court', 'Terrace', 'Mews', 'Close', 'Crescent', 'Grove', 'Way', 'Walk', 'Hill', 'Park', 'Gardens']
+    breakfasts = ['Continental', 'Continental', 'Continental', 'Continental', 'Continental', 'Full English', 'Bagel & Tea', 'Bagel & Juice', 'Toast & Cereal', 'Toast & Cereal', 'Cooked Breakfast', 'Buffet', 'Buffet', 'Waffles', 'Pancakes', 'Tea & Toast', 'Toast & Juice']
+    breakfast_prices = [0, 0, 0, 0, 0, 500, 600, 700, 800, 900, 1000, 1000, 1200, 1200, 1500]
+    lunches = ['Sandwich', 'Salad', 'Soup', 'Pasta', 'Stew', 'Homecooked Meal']
+    lunch_prices = [0, 500, 500, 500, 500, 500, 600, 700, 800, 900, 1000, 1500, 2000]
+    afternoon_teas = ['Tea & Biscuits', 'Tea & Scones', 'Tea & Croissants']
+    afternoon_tea_prices = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 300, 400, 500, 600, 700, 800]
+    dinners = ['Set Menu', 'BBQ', 'Homecooked Meal']
+    dinner_prices = [0, 0, 800, 800, 800, 1000, 1000, 1000, 1500, 2000, 3000, 4000, 5000, 6000]
+    generated_meals = {}  # FROM HERE GENERATING MEALS
 
     for _ in range(number_of_properties):
-        country = 'Testland'
+        country = random.choice(countries)
         property_type = random.choice(property_types)
-        check_in_from = random.randint(9, 18)
-        check_in_to = random.randint(22, 28)
-        check_out = random.randint(9, 14)
+        check_in_from = random.randint(12, 16)
+        check_in_to = random.randint(20, 27)
+        check_out = random.randint(9, 13)
         cancel_period = random.choice(cancel_periods)
         user_id = random.choice(range(1, len(random_users) + 1))
-        city = ''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase, k=6))
-        address_1 = f"{random.randint(1, 999)} {city} Street"
-        address_2 = f"{city} District"
-        address_3 = f"{city} County"
+        city = random.choice(cities[country])
+        address_1 = f"{random.randint(1, 999)} {city} {random.choice(street_words)}"
+        address_2 = f""
+        address_3 = ""
         postcode = ''.join(random.choices(string.ascii_uppercase, k=2)) + ''.join(random.choices(string.digits, k=2)) + ' ' + ''.join(random.choices(string.digits, k=1)) + ''.join(random.choices(string.ascii_uppercase, k=2))
         phone_number = ''.join(random.choices(string.digits, k=10))
-        name = f"{city} Property"
+        name = f"{city} {random.choice(geographical_words)} {random.choice(stay_words)}"
         description = f"A {property_type.lower()} in {city} for testing purposes."
         meals = {'Breakfast': {'Bagel & Tea': 0, 'Full English': 500}}
         extras = {'City tour': 1200, 'Airport transfer for up to 4 people': 400, 'Late check-out until 4 pm': 2000, 'Cooking class': 1500, 'Massage': 2000}

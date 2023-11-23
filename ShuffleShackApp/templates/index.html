@@ -20,7 +20,7 @@
                 {% if in_search %}<i>
                     {% if room.total_space == 'Exact' %}
                         <p style="padding-top: 4px; font-size: 0.9em;">{{ room_name_checker(room.name) }} with {% for bed in format_beds(room.beds.items()) %}{{ bed }}{% if not loop.last %}, {% endif %}{% endfor %} - {% if room.has_bathroom %}Private{% else %}Shared{% endif %} bathroom</p>
-                    {% elif room.total_space == 'More' %}
+                    {% elif 'More' in room.total_space %}
                         <p style="padding-top: 4px; font-size: 0.9em;">{{ room_name_checker(room.name) }} with {% for bed in format_beds(room.beds.items()) %}{{ bed }}{% if not loop.last %}, {% endif %}{% endfor %} - {% if room.has_bathroom %}Private{% else %}Shared{% endif %} bathroom</p>
                     {% elif room.total_space == 'Less' %}
                         <p style="padding-top: 4px; font-size: 0.9em;">{{ room_name_checker(room.name) }} with {% for bed in format_beds(room.beds.items()) %}{{ bed }}{% if not loop.last %}, {% endif %}{% endfor %}, and extra beds/space available - {% if room.has_bathroom %}Private{% else %}Shared{% endif %} bathroom</p>
