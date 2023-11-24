@@ -21,11 +21,15 @@ def index():
         check_in = search_query['check_in']
         check_out = search_query['check_out']
         city = search_query['city']
-        city_name = city.split(',')[0]
+        city_name = city.split(',')[0].strip()
+        try:
+            country = city.split(',')[1].strip()
+        except IndexError:
+            country = ''
         number_of_guests = int(search_query['guests'])
         session['search_query'] = [check_in, check_out, city, number_of_guests]
         
-        properties_and_rooms = get_search_properties(check_in, check_out, city_name, number_of_guests)
+        properties_and_rooms = get_search_properties(check_in, check_out, city_name, country, number_of_guests)
         in_search = True
     else:
         print('NO SEARCH QUERY FOUND')

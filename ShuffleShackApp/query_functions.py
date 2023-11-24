@@ -43,7 +43,7 @@ def get_popular_properties():
 BookingAlias = aliased(Booking)
 RoomBookingAlias = aliased(rooms_bookings)
 
-def get_search_properties(check_in, check_out, city, number_of_guests):
+def get_search_properties(check_in, check_out, city, country, number_of_guests):
     
     query = (
         db.session.query(Property, Room)
@@ -56,7 +56,8 @@ def get_search_properties(check_in, check_out, city, number_of_guests):
                 BookingAlias.end_date.between(check_in, check_out)
             )
         ))
-        .filter(Property.city == city)
+        .filter(func.lower(Property.city) == func.lower(city))
+        .filter(func.lower(Property.country) == func.lower(country))
         .filter(or_(BookingAlias.id == None, and_(
             not_(BookingAlias.start_date.between(check_in, check_out)),
             not_(BookingAlias.end_date.between(check_in, check_out))

@@ -375,7 +375,7 @@ def create_random_rooms(number_of_rooms, random_properties):
     return rooms
 
 
-def init_random_data(db, number_of_users, number_of_properties, number_of_rooms):
+def init_random_data(db, seed_with_default_data, number_of_users, number_of_properties, number_of_rooms):
 
     from flask import Flask
     from ShuffleShackApp.config import DevelopmentConfig
@@ -385,6 +385,9 @@ def init_random_data(db, number_of_users, number_of_properties, number_of_rooms)
     app.config.from_object(DevelopmentConfig)
     db.init_app(app)
     with app.app_context():
+        if seed_with_default_data != 'y':
+            db.drop_all()
+            db.create_all()
 
         results = []
 
@@ -393,54 +396,69 @@ def init_random_data(db, number_of_users, number_of_properties, number_of_rooms)
 
             try:
                 random_users = create_random_users(number_of_users)
+                print("Processing users...")
                 db.session.add_all(random_users)
                 db.session.commit()
-                results.append(f"Added {number_of_users} random users to the database.")
+                print(f"Added {number_of_users} random users to the database.")
                 break
 
             except IntegrityError as error:
                 db.session.rollback()
                 attempt += 1
-                print(f"Error: {error}")
-
-        if len(results) == 0:
-            results.append(f"Failed to add {number_of_users} random users to the database after {max_attempts} attempts.")
+                choice = input("An IntegrityError occurred. Press E + Enter to see the results of the error, Enter to continue, or Q + Enter to quit.")
+                if choice == 'E' or choice == 'e':
+                    print(f"Error: {error}")
+                    s_choice = input("Press Enter to continue, or Q + Enter to quit.")
+                    if s_choice == 'Q' or s_choice == 'q':
+                        exit()
+                elif choice == 'Q' or choice == 'q':
+                    exit()
         
         attempt, max_attempts, random_properties = 0, 5, []
         while attempt < max_attempts and number_of_properties > 0:
 
             try:
                 random_properties = create_random_properties(number_of_properties, random_users)
+                print("Processing properties...")
                 db.session.add_all(random_properties)
                 db.session.commit()
-                results.append(f"Added {number_of_properties} random properties to the database.")
+                print(f"Added {number_of_properties} random properties to the database.")
                 break
 
             except IntegrityError as error:
                 db.session.rollback()
                 attempt += 1
-                print(f"Error: {error}")
-        
-        if len(results) == 1:
-            results.append(f"Failed to add {number_of_properties} random properties to the database after {max_attempts} attempts.")
+                choice = input("An IntegrityError occurred. Press E + Enter to see the results of the error, Enter to continue, or Q + Enter to quit.")
+                if choice == 'E' or choice == 'e':
+                    print(f"Error: {error}")
+                    s_choice = input("Press Enter to continue, or Q + Enter to quit.")
+                    if s_choice == 'Q' or s_choice == 'q':
+                        exit()
+                elif choice == 'Q' or choice == 'q':
+                    exit()
         
         attempt, max_attempts, random_rooms = 0, 5, []
         while attempt < max_attempts and number_of_rooms > 0:
 
             try:
                 random_rooms = create_random_rooms(number_of_rooms, random_properties)
+                print("Processing rooms...")
                 db.session.add_all(random_rooms)
                 db.session.commit()
-                results.append(f"Added {number_of_rooms} random rooms to the database.")
+                print(f"Added {number_of_rooms} random rooms to the database.")
                 break
 
             except IntegrityError as error:
                 db.session.rollback()
                 attempt += 1
-                print(f"Error: {error}")
-        
-        if len(results) == 2:
-            results.append(f"Failed to add {number_of_rooms} random rooms to the database after {max_attempts} attempts.")
+                choice = input("An IntegrityError occurred. Press E + Enter to see the results of the error, Enter to continue, or Q + Enter to quit.")
+                if choice == 'E' or choice == 'e':
+                    print(f"Error: {error}")
+                    s_choice = input("Press Enter to continue, or Q + Enter to quit.")
+                    if s_choice == 'Q' or s_choice == 'q':
+                        exit()
+                elif choice == 'Q' or choice == 'q':
+                    exit()
         
         # attempt, max_attempts, random_bookings = 0, 5, []
         # while attempt < max_attempts and number_of_bookings > 0:
@@ -461,4 +479,3 @@ def init_random_data(db, number_of_users, number_of_properties, number_of_rooms)
         #     results.append(f"Failed to add {number_of_bookings} random bookings to the database after {max_attempts} attempts.")
 
         db.session.remove()
-    return results
