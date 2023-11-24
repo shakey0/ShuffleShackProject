@@ -118,20 +118,15 @@ def get_search_properties(check_in, check_out, city, country, number_of_guests):
                 if r.id == room.id:
                     continue
                 rooms_for_property.append(r)
-                for room in rooms_for_property:
-                    print(room.name, room.beds)
                 if sum([sum(x.beds.values()) for x in rooms_for_property]) == number_of_guests:
                     bed_space_properties_and_rooms.append((property, [x for x in rooms_for_property], 'Exact', sum([x.price for x in rooms_for_property])))
                     exact_ps.append(property.id)
-                    print('EXACT\n')
                 elif sum([sum(x.beds.values()) for x in rooms_for_property]) > number_of_guests:
                     bed_space_properties_and_rooms.append((property, [x for x in rooms_for_property], f'More{sum([sum(x.beds.values()) for x in rooms_for_property]) - number_of_guests}', sum([x.price for x in rooms_for_property])))
                     more_ps.append(property.id)
-                    print('MORE\n')
                 elif sum([sum(x.beds.values()) for x in rooms_for_property]) < number_of_guests and sum([x.max_guests for x in rooms_for_property]) >= number_of_guests:
                     bed_space_properties_and_rooms.append((property, [x for x in rooms_for_property], f'Less{number_of_guests - sum([sum(x.beds.values()) for x in rooms_for_property])}', sum([x.price for x in rooms_for_property])))
                     less_ps.append(property.id)
-                    print('LESS\n')
 
     bed_space_properties_and_rooms.sort(key=lambda property_room: property_room[3])
     bed_space_properties_and_rooms.sort(key=lambda property_room: property_room[2])
