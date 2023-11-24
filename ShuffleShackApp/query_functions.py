@@ -37,12 +37,11 @@ def get_popular_properties():
         .all()
 
     already_appended = []
-    return [(property, room) for property, room in properties_and_rooms if property.id not in already_appended and not already_appended.append(property.id)]
+    return [(property, [room], '', room.price) for property, room in properties_and_rooms if property.id not in already_appended and not already_appended.append(property.id)]
 
 
 BookingAlias = aliased(Booking)
 RoomBookingAlias = aliased(rooms_bookings)
-
 
 def get_search_properties(check_in, check_out, city, number_of_guests):
     
@@ -80,30 +79,60 @@ def get_search_properties(check_in, check_out, city, number_of_guests):
             if len(all_dates) == len(available_dates):
                 available_properties_and_rooms.append((property, room))
 
-
     bed_space_properties_and_rooms = []
+    exact_properties, more_properties, less_properties = [], [], []
+    less_bed_space_properties_and_rooms = []
+
     for property, room in available_properties_and_rooms:
-        total_bed_spaces = (
-            room.beds.get('Single', 0) +
-            room.beds.get('Queen', 0) +
-            room.beds.get('Double', 0) +
-            room.beds.get('King', 0) +
-            room.beds.get('Super King', 0) +
-            room.beds.get('Bunk', 0) +
-            room.beds.get('Triple Bunk', 0) +
-            room.beds.get('Floor Space', 0)
-        )
+        total_bed_spaces = sum(room.beds.values())
+        # print(total_bed_spaces)
         if total_bed_spaces == number_of_guests:
-            room.total_space = 'Exact'
-            bed_space_properties_and_rooms.append((property, room))
+            bed_space_properties_and_rooms.append((property, [room], 'Exact', room.price))
+            exact_properties.append(property.id)
         elif total_bed_spaces > number_of_guests:
-            room.total_space = f'More{total_bed_spaces - number_of_guests}'
-            bed_space_properties_and_rooms.append((property, room))
+            bed_space_properties_and_rooms.append((property, [room], f'More{total_bed_spaces - number_of_guests}', room.price))
+            more_properties.append(property.id)
         elif total_bed_spaces < number_of_guests and room.max_guests >= number_of_guests:
-            room.total_space = 'Less'
-            bed_space_properties_and_rooms.append((property, room))
+            bed_space_properties_and_rooms.append((property, [room], f'Less{number_of_guests - total_bed_spaces}', room.price))
+            less_bed_space_properties_and_rooms.append((property, room))
+            less_properties.append(property.id)
+        else:
+            less_bed_space_properties_and_rooms.append((property, room))
+            less_properties.append(property.id)
     
-    bed_space_properties_and_rooms.sort(key=lambda property_room: property_room[1].price)
-    bed_space_properties_and_rooms.sort(key=lambda property_room: property_room[1].total_space)
+    for property, room in less_bed_space_properties_and_rooms:
+        if property.id in exact_properties:
+            continue
+        if property.id in more_properties and property.id not in less_properties:
+            continue
+        exact_ps, more_ps, less_ps = [], [], []
+        rooms_for_property = []
+        rooms_for_property.append(room)
+        for p, r in less_bed_space_properties_and_rooms:
+            if p.id in exact_ps:
+                continue
+            if p.id in more_ps and p.id not in less_ps:
+                continue
+            if p.id == property.id:
+                if r.id == room.id:
+                    continue
+                rooms_for_property.append(r)
+                for room in rooms_for_property:
+                    print(room.name, room.beds)
+                if sum([sum(x.beds.values()) for x in rooms_for_property]) == number_of_guests:
+                    bed_space_properties_and_rooms.append((property, [x for x in rooms_for_property], 'Exact', sum([x.price for x in rooms_for_property])))
+                    exact_ps.append(property.id)
+                    print('EXACT\n')
+                elif sum([sum(x.beds.values()) for x in rooms_for_property]) > number_of_guests:
+                    bed_space_properties_and_rooms.append((property, [x for x in rooms_for_property], f'More{sum([sum(x.beds.values()) for x in rooms_for_property]) - number_of_guests}', sum([x.price for x in rooms_for_property])))
+                    more_ps.append(property.id)
+                    print('MORE\n')
+                elif sum([sum(x.beds.values()) for x in rooms_for_property]) < number_of_guests and sum([x.max_guests for x in rooms_for_property]) >= number_of_guests:
+                    bed_space_properties_and_rooms.append((property, [x for x in rooms_for_property], f'Less{number_of_guests - sum([sum(x.beds.values()) for x in rooms_for_property])}', sum([x.price for x in rooms_for_property])))
+                    less_ps.append(property.id)
+                    print('LESS\n')
+
+    bed_space_properties_and_rooms.sort(key=lambda property_room: property_room[3])
+    bed_space_properties_and_rooms.sort(key=lambda property_room: property_room[2])
     favoured_properties_and_rooms = []
-    return [(property, room) for property, room in bed_space_properties_and_rooms if property.id not in favoured_properties_and_rooms and not favoured_properties_and_rooms.append(property.id)]
+    return [(property, room, accuracy, price) for property, room, accuracy, price in bed_space_properties_and_rooms if property.id not in favoured_properties_and_rooms and not favoured_properties_and_rooms.append(property.id)]

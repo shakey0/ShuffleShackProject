@@ -325,7 +325,7 @@ def create_random_rooms(number_of_rooms, random_properties):
         else:
             available_days = random.choice([random.choice(available_days_3_combos), random.choice(available_days_3_weekends)])
         
-        max_guests = sum(generated_beds.values()) + random.choice([0, 0, 0, 1, 2, 2, 2, 2, 2, 2, 3, 3, 4, 5, 6])
+        max_guests = sum(generated_beds.values()) + random.choice([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 4, 5, 6])
         
         generated_extras = {}
 
