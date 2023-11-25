@@ -45,32 +45,40 @@ RoomBookingAlias = aliased(rooms_bookings)
 
 def get_search_properties(check_in, check_out, city, country, number_of_guests):
     
+    check_in = datetime.datetime.strptime(check_in, "%Y-%m-%d").date()
+    check_out = datetime.datetime.strptime(check_out, "%Y-%m-%d").date()
+
     query = (
-        db.session.query(Property, Room)
+        db.session.query(Property, Room, BookingAlias)
         .join(Room, Property.id == Room.property_id)
         .outerjoin(RoomBookingAlias, Room.id == RoomBookingAlias.c.room_id)
         .outerjoin(BookingAlias, and_(
             RoomBookingAlias.c.booking_id == BookingAlias.id,
             or_(
-                BookingAlias.start_date.between(check_in, check_out),
-                BookingAlias.end_date.between(check_in, check_out)
+                func.date(check_in).between(BookingAlias.start_date, BookingAlias.end_date - datetime.timedelta(days=1)),
+                func.date(check_out).between(BookingAlias.start_date + datetime.timedelta(days=1), BookingAlias.end_date)
             )
         ))
         .filter(func.lower(Property.city) == func.lower(city))
         .filter(func.lower(Property.country) == func.lower(country))
-        .filter(or_(BookingAlias.id == None, and_(
-            not_(BookingAlias.start_date.between(check_in, check_out)),
-            not_(BookingAlias.end_date.between(check_in, check_out))
-        )))
     )
-
     properties_with_rooms = query.all()
 
-    check_in = datetime.datetime.strptime(check_in, "%Y-%m-%d").date()
-    check_out = datetime.datetime.strptime(check_out, "%Y-%m-%d").date()
+    room_states = {}
+    for property, room, booking_alias in properties_with_rooms:
+        if room.id not in room_states:
+            room_states[room.id] = {"property": property, "room": room, "states": {"booked": 0, "unbooked": 0}}
+        if booking_alias is not None:
+            room_states[room.id]["states"]["booked"] += 1
+        elif booking_alias is None:
+            room_states[room.id]["states"]["unbooked"] += 1
+    non_booked_rooms = []
+    for room_id, room_info in room_states.items():
+        if room_info["states"]["booked"] == 0:
+            non_booked_rooms.append((room_info["property"], room_info["room"]))
 
     available_properties_and_rooms = []
-    for property, room in properties_with_rooms:
+    for property, room in non_booked_rooms:
         if room.available_days == 'All':
             available_properties_and_rooms.append((property, room))
         else:

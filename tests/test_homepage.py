@@ -8,7 +8,7 @@ def test_homepage_navbar(page, test_app, test_client, seed_test_database, flask_
     expect(nav_item_ps).to_have_text([
         'Check in',
         'Check out',
-        'City',
+        'City, Country',
         'Guests'
     ])
     go_button = page.locator('.nav-item input[type="submit"]')
